@@ -41,10 +41,11 @@ I recommend having this script running most of time as part of the workflow. I f
 This script makes it so that to use the mouse buttons and mouse wheel, caps lock must be held.
 This also helps you be more mindful about mouse usage.
 I also recommend having this script running a majority of the time.
-### LimitAmountOfClicks
-When your really trying to limit mouse usage such as when your learning a new shortcut you can use this script.
-It limits the amount of clicks in a certain time frame. 
-It can be a little frustrating sometimes but it can help you persist in learning some more advanced keyboard shortcuts.
+### TimeBetweenClicks
+You can use this script when your really trying to be more aware and limit mouse usage such as when your learning a new shortcut.
+It adds wait times between mouse clicks. After a certain amount of clicks, the wait time is increased. It is reset after a certain amount of time. 
+It also requires capslock to be held.
+It can be a little frustrating sometimes but it can help you persist in learning more advanced keyboard shortcuts.
 
 #### Mac Version Coming Soon
 Script to disable dock and temporary show it.
