@@ -37,6 +37,8 @@ There are three AutoHotKey scripts
 This script disables the task bar so that it is easier to get into the habit of using the keyboard to switch windows.
 The task bar can be temporary re-enabled with a shortcut. The default shortcut is Ctrl + 0 and the amount of time before the task bar is hidden again is 10 seconds.
 I recommend having this script running most of time as part of the workflow. I find this one extremely useful.
+
+In the script there is a extra sleep that is commented out. Enabling this line can help when your having a difficult time getting out of the habit of using the task bar to switch windows. Another tip is to occasionally change the shortcut if find yourself using it more than you want to.
 ### RequireCapsLock
 This script makes it so that to use the mouse buttons and mouse wheel, caps lock must be held.
 This also helps you be more mindful about mouse usage.
