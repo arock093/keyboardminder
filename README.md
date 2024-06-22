@@ -63,6 +63,17 @@ Contributions are more than welcome. Open an issue and submit a pull request if 
 ## Roadmap
 My goal with this project and future ones is to keep them as simple as possible. I don’t want to add unnecessary features but am more than willing to explore variations to the scripts. If there are any ideas for useful variations to the scripts, a settings panel can be added to the scripts.
 
+Here is a sneek peak from the next project in the series written in C++ which adds some useful keyboard shortcuts.
+```
+BOOL IsAltTabWindow(HWND hwnd) {...
+if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE) != 0) {...
+if (hwnd != 0) {
+...
+else {
+  startApplication(appToStart);
+}
+```
+
 ## Funding
 
 If this project is of any use to you or you interested in my future projects, you can help fund my work.
