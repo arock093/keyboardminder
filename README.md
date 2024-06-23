@@ -59,6 +59,9 @@ This command will restore to the default behavior.\
 ```defaults delete com.apple.dock autohide-delay; killall Dock```\
 I may also add a Script to temporary show the dock again using a keyboard shortcut.
 
+Acknowledgement\
+The Mac solutions were inspired by a post on Stack Exchange. You can view the original solutions [here](https://apple.stackexchange.com/questions/59556/is-there-a-way-to-completely-disable-dock).
+
 ## Installing
 First install AutoHotKey to be able to run the scripts.
 
