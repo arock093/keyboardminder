@@ -48,8 +48,19 @@ It adds wait times between mouse clicks. After a certain amount of clicks, the w
 It also requires capslock to be held.
 It can be a little frustrating sometimes but it can help you persist in learning more advanced keyboard shortcuts.
 
-#### Mac Version Coming Soon
-Script to disable dock and temporary show it.
+#### Mac Version
+There are a couple decent solutions for MacOS.
+The first is to make the dock as small as possible. You can also move it to the side of your screen.
+The second is to set the autohide delay to around 8 seconds or even a longer amount of time.
+For when you do still need to access the dock quickly, you can get to it from Mission Control which can also be disabled if desired.
+This command will set the autohide delay time in seconds.\
+```defaults write com.apple.dock autohide-delay -float 8; killall Dock```\
+This command will restore to the default behavior.\
+```defaults delete com.apple.dock autohide-delay; killall Dock```\
+I may also add a Script to temporary show the dock again using a keyboard shortcut.
+
+Acknowledgement\
+The Mac solutions were inspired by a post on Stack Exchange. You can view the original solutions [here](https://apple.stackexchange.com/questions/59556/is-there-a-way-to-completely-disable-dock).
 
 ## Installing
 First install AutoHotkey to be able to run the scripts.
