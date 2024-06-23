@@ -1,6 +1,6 @@
 # Keyboardminder
 
-This project is the first of many I am working on with each one building on top of each other and increasing in complexity. I usually prototype in PowerShell, Python and AutoHotKey, then write a C++ version once the project is more established.
+This project is the first of many I am working on with each one building on top of each other and increasing in complexity. I usually prototype in PowerShell, Python and AutoHotkey, then write a C++ version once the project is more established.
 
 ## Financial Transparency Statement
 
@@ -27,11 +27,11 @@ This may seem obvious but it can be trickier than you would think to get out of 
 
 Originally what I tried was placing my mouse further away from myself. What I found was there are some tasks that sometimes require using a mouse and others that require it to be used almost the entire time. This led to me moving the mouse closer for the tasks that required it and this ultimately led to using the mouse more overall again which wasn't my goal. 
 
-What I ended up doing was using AutoHotKey to write some scripts to help. These scripts help limit mouse usage so that you remember to use the keyboard more.
+What I ended up doing was using AutoHotkey to write some scripts to help. These scripts help limit mouse usage so that you remember to use the keyboard more.
 
 ## Description
 
-There are three AutoHotKey scripts
+There are three AutoHotkey scripts
 ### DisableTaskbar
 This script disables the task bar so that it is easier to get into the habit of using the keyboard to switch windows.
 The task bar can be temporary re-enabled with a shortcut. The default shortcut is Ctrl + 0 and the amount of time before the task bar is hidden again is 10 seconds.
@@ -52,7 +52,7 @@ It can be a little frustrating sometimes but it can help you persist in learning
 Script to disable dock and temporary show it.
 
 ## Installing
-First install AutoHotKey to be able to run the scripts.
+First install AutoHotkey to be able to run the scripts.
 
 https://www.autohotkey.com/
 
