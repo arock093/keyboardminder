@@ -51,10 +51,10 @@ It can be a little frustrating sometimes but it can help you persist in learning
 #### Mac Version
 There are a couple decent solutions for MacOS.
 The first is to make the dock as small as possible. You can also move it to the side of your screen.
-The second is to set the autohide delay to a longer amount of time.
-For when you do still need to access the dock, you can get to it in Mission Control or set the delay to around 8 seconds.
+The second is to set the autohide delay to around 8 seconds or even a longer amount of time.
+For when you do still need to access the dock quickly, you can get to it from Mission Control which can also be disabled if desired.
 This command will set the autohide delay time in seconds.\
-```defaults write com.apple.dock autohide-delay -float 1000; killall Dock```\
+```defaults write com.apple.dock autohide-delay -float 8; killall Dock```\
 This command will restore to the default behavior.\
 ```defaults delete com.apple.dock autohide-delay; killall Dock```\
 I may also add a Script to temporary show the dock again using a keyboard shortcut.
