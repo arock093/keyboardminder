@@ -65,6 +65,8 @@ The Mac solutions were inspired by a post on Stack Exchange. You can view the or
 ## Installing
 First install AutoHotkey to be able to run the scripts.
 
+**Warning**: While AutoHotkey itself should be safe, installing it does increase your attack surface area. The biggest thing is make sure you know what the scripts you run do.
+
 https://www.autohotkey.com/
 
 Next simply download the repository and run the scripts.
