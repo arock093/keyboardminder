@@ -74,6 +74,8 @@ https://www.autohotkey.com/
 
 Next simply download the repository and run the scripts.
 
+For the C++ version of DisableTaskbar you can compile it yourself. A exe will be provided at a later date once more testing has been done.
+
 ## Contributions
 Contributions are more than welcome. Open an issue and submit a pull request if you have one. Please be respectful. 
 
