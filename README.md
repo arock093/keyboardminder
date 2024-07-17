@@ -41,6 +41,13 @@ In the script there is a extra sleep that is commented out. Enabling this line c
 
 There is also an early C++ version of this tool. It still needs to be tested more.
 
+<details>
+<summary>Demo</summary>
+
+![](DisableTaskbarDemo.gif)
+  
+</details>
+
 ### RequireCapsLock
 This script makes it so that to use the mouse buttons and mouse wheel, caps lock must be held.
 This also helps you be more mindful about mouse usage.
