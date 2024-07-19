@@ -27,19 +27,19 @@ This may seem obvious but it can be trickier than you would think to get out of 
 
 Originally what I tried was placing my mouse further away from myself. What I found was there are some tasks that sometimes require using a mouse and others that require it to be used almost the entire time. This led to me moving the mouse closer for the tasks that required it and this ultimately led to using the mouse more overall again which wasn't my goal. 
 
-What I ended up doing was using AutoHotkey to write some scripts to help. These scripts help limit mouse usage so that you remember to use the keyboard more.
+What I ended up doing was making some tools to help. These tools help limit mouse usage so that you remember to use the keyboard more.
 
 ## Description
 
-There are three tools. All three have AutoHotkey script versions and one also has an early C++ version.
+There are three tools. One has both a C++ and AutoHotkey version and the other two have AutoHotkey versions.
 ### DisableTaskbar
-This script disables the task bar so that it is easier to get into the habit of using the keyboard to switch windows.
+This tool disables the task bar so that it is easier to get into the habit of using the keyboard to switch windows.
 The task bar can be temporary re-enabled with a shortcut. The default shortcut is Ctrl + 0 and the amount of time before the task bar is hidden again is 10 seconds.
-I recommend having this script running most of time as part of the workflow. I find this one extremely useful.
+I recommend having this running most of time as part of the workflow. I find this one extremely useful.
 
-In the script there is a extra sleep that is commented out. Enabling this line can help when your having a difficult time getting out of the habit of using the task bar to switch windows. Another tip is to occasionally change the shortcut if find yourself using it more than you want to.
+In the code there is a extra sleep that is commented out. Enabling this line can help when your having a difficult time getting out of the habit of using the task bar to switch windows. Another tip is to occasionally change the shortcut if find yourself using it more than you want to.
 
-There is also an early C++ version of this tool. It still needs to be tested more.
+There is both a C++ version and prototype AutoHotkey version of this tool.
 
 <details>
 <summary>Demo</summary>
@@ -90,7 +90,7 @@ Next simply download the repository and run the scripts.
 Contributions are more than welcome. Open an issue and submit a pull request if you have one. Please be respectful. 
 
 ## Roadmap
-My goal with this project and future ones is to keep them as simple as possible. I don’t want to add unnecessary features but am more than willing to explore variations. If there are any ideas for useful variations, a settings panel can be added.
+My goal with this project and future ones is to keep the tools as simple as possible. I don’t want to add unnecessary features but am more than willing to explore variations. If there are any ideas for useful variations, a settings panel can be added.
 
 Here is a sneek peak from the next project in the series written in C++ which adds some useful keyboard shortcuts.
 ```
