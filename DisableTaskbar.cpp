@@ -6,7 +6,7 @@
 int main()
 {
 
-    if (!RegisterHotKey(NULL, 1, MOD_CONTROL, 0x49))
+    if (!RegisterHotKey(NULL, 1, MOD_CONTROL, 0x30))
     {
         std::cout << "Failed to register hot key 1" << std::endl;
     }
