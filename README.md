@@ -1,6 +1,17 @@
 # Keyboardminder
+A set of tools to help you use your keyboard more and build a better workflow.
 
-This project is the first of many I am working on with each one building on top of each other and increasing in complexity. I usually prototype in PowerShell, Python and AutoHotkey, then write a C++ version once the project is more established.
+## Purpose
+
+This project is the first in a series with the goal of creating a workflow you can use on your computer to get your work done as efficiently as possible. 
+
+The purpose of this specific project is provide a set of tools to help learn to solely use the keyboard for more tasks because it should be more efficient than using a mouse or track pad in a lot of cases. It also lays the groundwork for future projects that help you use the keyboard more efficiently.
+
+While I highly recommend incorporating this workflow into your routine for optimal efficiency in completing tasks, I also encourage you not to limit yourself exclusively to this method. Exploring different workflows can be a rewarding experience, offering valuable insights and potentially contributing to further improvements in this particular workflow. Feel free to experiment and find what works best for you in various contexts, whether at work or during more exploratory computer activities. This project aims to provide a reliable and efficient set of tools for your everyday tasks, but the beauty of technology lies in its diversity, allowing you to adapt and explore as needed.
+
+## Future Tools
+
+This project and these tools are the first of many I am working on with each one building on top of each other and working together to build a powerful workflow. The long term goal is to have all the tools bundled together in one coherent app written in C++. There are four other tools being worked on and possibly a fifth. These other tools are much more complex then the ones included in this repository. Some of the tools I have prototyped in PowerShell, Python or AutoHotkey. If available, I will include these prototypes in case anyone finds them useful. In the case of this repository a couple of the tools only have a AutoHotkey version so far.
 
 ## Financial Transparency Statement
 
@@ -11,14 +22,6 @@ If this project is successfully funded I will be able to release more open sourc
 Please support my work.
 
 [GitHub Sponsors Profile](https://github.com/sponsors/arock093)
-
-## Purpose
-
-This project is the first in a series with the goal of creating a workflow you can use on your computer to get your work done as efficiently as possible. 
-
-The purpose of this specific project is provide a set of tools to help learn to solely use the keyboard for more tasks because it should be more efficient than using a mouse or track pad in a lot of cases. It also lays the groundwork for future projects that help you use the keyboard more efficiently.
-
-While I highly recommend incorporating this workflow into your routine for optimal efficiency in completing tasks, I also encourage you not to limit yourself exclusively to this method. Exploring different workflows can be a rewarding experience, offering valuable insights and potentially contributing to further improvements in this particular workflow. Feel free to experiment and find what works best for you in various contexts, whether at work or during more exploratory computer activities. This project aims to provide a reliable and efficient set of tools for your everyday tasks, but the beauty of technology lies in its diversity, allowing you to adapt and explore as needed.
 
 ## Background
 
@@ -92,7 +95,7 @@ Contributions are more than welcome. Open an issue and submit a pull request if 
 ## Roadmap
 My goal with this project and future ones is to keep the tools as simple as possible. I don’t want to add unnecessary features but am more than willing to explore variations. If there are any ideas for useful variations, a settings panel can be added.
 
-Here is a sneek peak from the next project in the series written in C++ which adds some useful keyboard shortcuts.
+Here is a sneek peak from the next project in the series written in C++ which adds some useful keyboard shortcuts. It is around 400 lines.
 ```
 BOOL IsAltTabWindow(HWND hwnd) {...
 if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE) != 0) {...
