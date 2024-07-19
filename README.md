@@ -73,15 +73,18 @@ Acknowledgement\
 The Mac solutions were inspired by a post on Stack Exchange. You can view the original solutions [here](https://apple.stackexchange.com/questions/59556/is-there-a-way-to-completely-disable-dock).
 
 ## Installing
-First install AutoHotkey to be able to run the scripts.
+
+The DisableTaskbar tool can be found under [releases](https://github.com/arock093/keyboardminder/releases). 
+
+You can also compile DisableTaskbar yourself if you want to change the default shortcut, delay timing, or uncomment the extra delay.
+
+Install AutoHotkey to be able to run the other two tools or if you want to run the AutoHotkey version of DisableTaskbar.
 
 **Warning**: While AutoHotkey itself should be safe, installing it does increase your attack surface area. The biggest thing is make sure you know what the scripts you run do.
 
 https://www.autohotkey.com/
 
 Next simply download the repository and run the scripts.
-
-For the C++ version of DisableTaskbar you can compile it yourself. A exe will be provided at a later date once more testing has been done.
 
 ## Contributions
 Contributions are more than welcome. Open an issue and submit a pull request if you have one. Please be respectful. 
