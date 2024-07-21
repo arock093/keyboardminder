@@ -1,6 +1,17 @@
 # Keyboardminder
+A set of tools to help you use your keyboard more and build a better workflow.
 
-This project is the first of many I am working on with each one building on top of each other and increasing in complexity. I usually prototype in PowerShell, Python and AutoHotkey, then write a C++ version once the project is more established.
+## Purpose
+
+This project is the first in a series with the goal of creating a workflow you can use on your computer to get your work done as efficiently as possible. 
+
+The purpose of this specific project is provide a set of tools to help learn to solely use the keyboard for more tasks because it should be more efficient than using a mouse or track pad in a lot of cases. It also lays the groundwork for future projects that help you use the keyboard more efficiently.
+
+While I highly recommend incorporating this workflow into your routine for optimal efficiency in completing tasks, I also encourage you not to limit yourself exclusively to this method. Exploring different workflows can be a rewarding experience, offering valuable insights and potentially contributing to further improvements in this particular workflow. Feel free to experiment and find what works best for you in various contexts, whether at work or during more exploratory computer activities. This project aims to provide a reliable and efficient set of tools for your everyday tasks, but the beauty of technology lies in its diversity, allowing you to adapt and explore as needed.
+
+## Future Tools
+
+This project and these tools are the first of many I am working on with each one building on top of each other and working together to build a powerful workflow. The long term goal is to have all the tools bundled together in one coherent app written in C++. There are four other tools being worked on and possibly a fifth. These other tools are much more complex then the ones included in this repository. Some of the tools I have prototyped in PowerShell, Python or AutoHotkey. If available, I will include these prototypes in case anyone finds them useful. In the case of this repository a couple of the tools only have a AutoHotkey version so far.
 
 ## Financial Transparency Statement
 
@@ -12,14 +23,6 @@ Please support my work.
 
 [GitHub Sponsors Profile](https://github.com/sponsors/arock093)
 
-## Purpose
-
-This project is the first in a series with the goal of creating a workflow you can use on your computer to get your work done as efficiently as possible. 
-
-The purpose of this specific project is provide a set of tools to help learn to solely use the keyboard for more tasks because it should be more efficient than using a mouse or track pad in a lot of cases. It also lays the groundwork for future projects that help you use the keyboard more efficiently.
-
-While I highly recommend incorporating this workflow into your routine for optimal efficiency in completing tasks, I also encourage you not to limit yourself exclusively to this method. Exploring different workflows can be a rewarding experience, offering valuable insights and potentially contributing to further improvements in this particular workflow. Feel free to experiment and find what works best for you in various contexts, whether at work or during more exploratory computer activities. This project aims to provide a reliable and efficient set of tools for your everyday tasks, but the beauty of technology lies in its diversity, allowing you to adapt and explore as needed.
-
 ## Background
 
 I figured out the best way to learn to use the keyboard more is by intentionally using the mouse less. 
@@ -27,19 +30,19 @@ This may seem obvious but it can be trickier than you would think to get out of 
 
 Originally what I tried was placing my mouse further away from myself. What I found was there are some tasks that sometimes require using a mouse and others that require it to be used almost the entire time. This led to me moving the mouse closer for the tasks that required it and this ultimately led to using the mouse more overall again which wasn't my goal. 
 
-What I ended up doing was using AutoHotkey to write some scripts to help. These scripts help limit mouse usage so that you remember to use the keyboard more.
+What I ended up doing was making some tools to help. These tools help limit mouse usage so that you remember to use the keyboard more.
 
 ## Description
 
-There are three tools. All three have AutoHotkey script versions and one also has an early C++ version.
+There are three tools. One has both a C++ and AutoHotkey version and the other two have AutoHotkey versions.
 ### DisableTaskbar
-This script disables the task bar so that it is easier to get into the habit of using the keyboard to switch windows.
+This tool disables the task bar so that it is easier to get into the habit of using the keyboard to switch windows.
 The task bar can be temporary re-enabled with a shortcut. The default shortcut is Ctrl + 0 and the amount of time before the task bar is hidden again is 10 seconds.
-I recommend having this script running most of time as part of the workflow. I find this one extremely useful.
+I recommend having this running most of time as part of the workflow. I find this one extremely useful.
 
-In the script there is a extra sleep that is commented out. Enabling this line can help when your having a difficult time getting out of the habit of using the task bar to switch windows. Another tip is to occasionally change the shortcut if find yourself using it more than you want to.
+In the code there is a extra sleep that is commented out. Enabling this line can help when your having a difficult time getting out of the habit of using the task bar to switch windows. Another tip is to occasionally change the shortcut if find yourself using it more than you want to.
 
-There is also an early C++ version of this tool. It still needs to be tested more.
+There is both a C++ version and prototype AutoHotkey version of this tool.
 
 <details>
 <summary>Demo</summary>
@@ -73,7 +76,12 @@ Acknowledgement\
 The Mac solutions were inspired by a post on Stack Exchange. You can view the original solutions [here](https://apple.stackexchange.com/questions/59556/is-there-a-way-to-completely-disable-dock).
 
 ## Installing
-First install AutoHotkey to be able to run the scripts.
+
+The DisableTaskbar tool can be found under [releases](https://github.com/arock093/keyboardminder/releases). 
+
+You can also compile DisableTaskbar yourself if you want to change the default shortcut, delay timing, or uncomment the extra delay.
+
+Install AutoHotkey to be able to run the other two tools or if you want to run the AutoHotkey version of DisableTaskbar.
 
 **Warning**: While AutoHotkey itself should be safe, installing it does increase your attack surface area. The biggest thing is make sure you know what the scripts you run do.
 
@@ -81,15 +89,13 @@ https://www.autohotkey.com/
 
 Next simply download the repository and run the scripts.
 
-For the C++ version of DisableTaskbar you can compile it yourself. A exe will be provided at a later date once more testing has been done.
-
 ## Contributions
 Contributions are more than welcome. Open an issue and submit a pull request if you have one. Please be respectful. 
 
 ## Roadmap
-My goal with this project and future ones is to keep them as simple as possible. I don’t want to add unnecessary features but am more than willing to explore variations to the scripts. If there are any ideas for useful variations to the scripts, a settings panel can be added to the scripts.
+My goal with this project and future ones is to keep the tools as simple as possible. I don’t want to add unnecessary features but am more than willing to explore variations. If there are any ideas for useful variations, a settings panel can be added.
 
-Here is a sneek peak from the next project in the series written in C++ which adds some useful keyboard shortcuts.
+Here is a sneek peak from the next project in the series written in C++ which adds some useful keyboard shortcuts. It is around 400 lines.
 ```
 BOOL IsAltTabWindow(HWND hwnd) {...
 if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE) != 0) {...
