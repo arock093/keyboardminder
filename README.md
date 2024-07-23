@@ -93,7 +93,8 @@ Next simply download the repository and run the scripts.
 Contributions are more than welcome. Open an issue and submit a pull request if you have one. Please be respectful. 
 
 ## Roadmap
-My goal with this project and future ones is to keep the tools as simple as possible. I don’t want to add unnecessary features but am more than willing to explore variations. If there are any ideas for useful variations, a settings panel can be added.
+
+The next thing to be added is a basic config file for DisableTaskbar to use. This is close to being complete.
 
 Here is a sneek peak from the next project in the series written in C++ which adds some useful keyboard shortcuts. It is around 400 lines.
 ```
@@ -105,6 +106,7 @@ else {
   startApplication(appToStart);
 }
 ```
+My goal with this project and future ones is to keep the tools as simple as possible. I don’t want to add unnecessary features but am more than willing to explore variations. If there are any ideas for useful variations open an issue.
 
 ## Funding
 
