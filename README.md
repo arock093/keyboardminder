@@ -77,7 +77,11 @@ The Mac solutions were inspired by a post on Stack Exchange. You can view the or
 
 ## Installing
 
-The DisableTaskbar tool can be found under [releases](https://github.com/arock093/keyboardminder/releases). 
+#### Option 1
+
+The tools can be found under [releases](https://github.com/arock093/keyboardminder/releases). 
+
+#### Option 2
 
 You can also compile DisableTaskbar yourself if you want to change the default shortcut, delay timing, or uncomment the extra delay.
 
@@ -88,6 +92,8 @@ Install AutoHotkey to be able to run the other two tools or if you want to run t
 https://www.autohotkey.com/
 
 Next simply download the repository and run the scripts.
+
+---
 
 There is a prototype Powershell script [here](https://github.com/arock093/keyboardminder/blob/tool-manager-prototype/ToolManager.ps1) that demonstrates how you might want to manage the tools to use the workflow.
 
