@@ -79,7 +79,11 @@ The Mac solutions were inspired by a post on Stack Exchange. You can view the or
 
 #### Option 1
 
-The tools can be found under [releases](https://github.com/arock093/keyboardminder/releases). 
+A ZIP file with all the tools named Keyboardminder can be found under [releases](https://github.com/arock093/keyboardminder/releases).
+Download the ZIP file, unzip it somewhere and then run BasicInstaller.exe to add the tools to your startup folder.
+BasicInstaller can also be used to remove them from your startup folder.
+
+The tools can also be found individually under [releases](https://github.com/arock093/keyboardminder/releases).
 
 #### Option 2
 
