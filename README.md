@@ -107,7 +107,7 @@ Contributions are more than welcome. Open an issue and submit a pull request if 
 
 ## Roadmap
 
-The next thing to be added is a basic config file for DisableTaskbar to use. This is close to being complete.
+Take a look at open issues to see what is planned. Assigned issues are currently being worked on.
 
 Here is a sneek peak from the next project in the series written in C++ which adds some useful keyboard shortcuts. It is around 400 lines.
 ```
