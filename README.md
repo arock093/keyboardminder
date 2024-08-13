@@ -99,9 +99,8 @@ https://www.autohotkey.com/
 
 Next simply download the repository and run the scripts.
 
----
-
-There is a prototype Powershell script [here](https://github.com/arock093/keyboardminder/blob/tool-manager-prototype/ToolManager.ps1) that demonstrates how you might want to manage the tools to use the workflow.
+## Managing Tools
+There is a program named ToolManager.exe that you can use to manage the tools to use the workflow. It can be found in the Keyboardminder ZIP file or by itself under [releases](https://github.com/arock093/keyboardminder/releases). It can be run in interactive mode where you select options from a menu or in command line mode. Use -h or --help to get a list of available commands and options.
 
 ## Contributions
 Contributions are more than welcome. Open an issue and submit a pull request if you have one. Please be respectful. 
