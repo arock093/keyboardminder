@@ -9,6 +9,8 @@ The purpose of this specific project is provide a set of tools to help learn to 
 
 While I highly recommend incorporating this workflow into your routine for optimal efficiency in completing tasks, I also encourage you not to limit yourself exclusively to this method. Exploring different workflows can be a rewarding experience, offering valuable insights and potentially contributing to further improvements in this particular workflow. Feel free to experiment and find what works best for you in various contexts, whether at work or during more exploratory computer activities. This project aims to provide a reliable and efficient set of tools for your everyday tasks, but the beauty of technology lies in its diversity, allowing you to adapt and explore as needed.
 
+That being said, this workflow has had a large impact and decreased the amount of time I need to spend working on the computer each day by 20 - 30%.
+
 ## Future Tools
 
 This project and these tools are the first of many I am working on with each one building on top of each other and working together to build a powerful workflow. The long term goal is to have all the tools bundled together in one coherent app written in C++. There are four other tools being worked on and possibly a fifth. These other tools are much more complex then the ones included in this repository. Some of the tools I have prototyped in PowerShell, Python or AutoHotkey. If available, I will include these prototypes in case anyone finds them useful. In the case of this repository a couple of the tools only have a AutoHotkey version so far.
@@ -34,7 +36,7 @@ What I ended up doing was making some tools to help. These tools help limit mous
 
 ## Description
 
-There are three tools. One has both a C++ and AutoHotkey version and the other two have AutoHotkey versions.
+There are three tools so far. One has both a C++ and AutoHotkey version and the other two have AutoHotkey versions.
 ### DisableTaskbar
 This tool disables the task bar so that it is easier to get into the habit of using the keyboard to switch windows.
 The task bar can be temporary re-enabled with a shortcut. The default shortcut is Ctrl + 0 and the amount of time before the task bar is hidden again is 10 seconds.
@@ -97,16 +99,22 @@ https://www.autohotkey.com/
 
 Next simply download the repository and run the scripts.
 
----
+## Managing Tools
+There is a program named ToolManager.exe that you can use to manage the tools to use the workflow. It can be found in the Keyboardminder ZIP file or by itself under [releases](https://github.com/arock093/keyboardminder/releases). It needs to be in the same directory as the tools. It can be run in interactive mode where you select options from a menu or in command line mode. Use -h or --help to get a list of available commands and options.
 
-There is a prototype Powershell script [here](https://github.com/arock093/keyboardminder/blob/tool-manager-prototype/ToolManager.ps1) that demonstrates how you might want to manage the tools to use the workflow.
+You can add ToolManager to your PATH using the GUI or with the following PowerShell commands. Make sure to set the $ToolManagerPath variable to the actual location of ToolManager.
+```
+$ToolManagerPath = "C:\Users\UserName\Documents\Keyboardminder"
+$oldPath = [System.Environment]::GetEnvironmentVariable("PATH", "User")
+[System.Environment]::SetEnvironmentVariable("PATH", "$oldPath;$ToolManagerPath", "User")
+```
 
 ## Contributions
 Contributions are more than welcome. Open an issue and submit a pull request if you have one. Please be respectful. 
 
 ## Roadmap
 
-The next thing to be added is a basic config file for DisableTaskbar to use. This is close to being complete.
+Take a look at open issues to see what is planned. Assigned issues are currently being worked on.
 
 Here is a sneek peak from the next project in the series written in C++ which adds some useful keyboard shortcuts. It is around 400 lines.
 ```
