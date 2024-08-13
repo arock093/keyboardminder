@@ -100,7 +100,14 @@ https://www.autohotkey.com/
 Next simply download the repository and run the scripts.
 
 ## Managing Tools
-There is a program named ToolManager.exe that you can use to manage the tools to use the workflow. It can be found in the Keyboardminder ZIP file or by itself under [releases](https://github.com/arock093/keyboardminder/releases). It can be run in interactive mode where you select options from a menu or in command line mode. Use -h or --help to get a list of available commands and options.
+There is a program named ToolManager.exe that you can use to manage the tools to use the workflow. It can be found in the Keyboardminder ZIP file or by itself under [releases](https://github.com/arock093/keyboardminder/releases). It needs to be in the same directory as the tools. It can be run in interactive mode where you select options from a menu or in command line mode. Use -h or --help to get a list of available commands and options.
+
+You can add ToolManager to your PATH using the GUI or with the following PowerShell commands. Make sure to set the $ToolManagerPath variable to the actual location of ToolManager.
+```
+$ToolManagerPath = "C:\Users\UserName\Documents\Keyboardminder"
+$oldPath = [System.Environment]::GetEnvironmentVariable("PATH", "User")
+[System.Environment]::SetEnvironmentVariable("PATH", "$oldPath;$ToolManagerPath", "User")
+```
 
 ## Contributions
 Contributions are more than welcome. Open an issue and submit a pull request if you have one. Please be respectful. 
