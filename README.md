@@ -9,7 +9,7 @@ The purpose of this specific project is provide a set of tools to help learn to 
 
 While I highly recommend incorporating this workflow into your routine for optimal efficiency in completing tasks, I also encourage you not to limit yourself exclusively to this method. Exploring different workflows can be a rewarding experience, offering valuable insights and potentially contributing to further improvements in this particular workflow. Feel free to experiment and find what works best for you in various contexts, whether at work or during more exploratory computer activities. This project aims to provide a reliable and efficient set of tools for your everyday tasks, but the beauty of technology lies in its diversity, allowing you to adapt and explore as needed.
 
-That being said, this workflow has had a large impact and decreased the amount of time I need to spend working on the computer by 20 - 30% each day.
+That being said, this workflow has had a large impact and decreased the amount of time I need to spend working on the computer each day by 20 - 30%.
 
 ## Future Tools
 
@@ -36,7 +36,7 @@ What I ended up doing was making some tools to help. These tools help limit mous
 
 ## Description
 
-There are three tools. One has both a C++ and AutoHotkey version and the other two have AutoHotkey versions.
+There are three tools so far. One has both a C++ and AutoHotkey version and the other two have AutoHotkey versions.
 ### DisableTaskbar
 This tool disables the task bar so that it is easier to get into the habit of using the keyboard to switch windows.
 The task bar can be temporary re-enabled with a shortcut. The default shortcut is Ctrl + 0 and the amount of time before the task bar is hidden again is 10 seconds.
