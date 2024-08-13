@@ -9,6 +9,8 @@ The purpose of this specific project is provide a set of tools to help learn to 
 
 While I highly recommend incorporating this workflow into your routine for optimal efficiency in completing tasks, I also encourage you not to limit yourself exclusively to this method. Exploring different workflows can be a rewarding experience, offering valuable insights and potentially contributing to further improvements in this particular workflow. Feel free to experiment and find what works best for you in various contexts, whether at work or during more exploratory computer activities. This project aims to provide a reliable and efficient set of tools for your everyday tasks, but the beauty of technology lies in its diversity, allowing you to adapt and explore as needed.
 
+That being said, this workflow has had a large impact and decreased the amount of time I need to spend working on the computer by 20 - 30% each day.
+
 ## Future Tools
 
 This project and these tools are the first of many I am working on with each one building on top of each other and working together to build a powerful workflow. The long term goal is to have all the tools bundled together in one coherent app written in C++. There are four other tools being worked on and possibly a fifth. These other tools are much more complex then the ones included in this repository. Some of the tools I have prototyped in PowerShell, Python or AutoHotkey. If available, I will include these prototypes in case anyone finds them useful. In the case of this repository a couple of the tools only have a AutoHotkey version so far.
