@@ -9,6 +9,7 @@
 #include <sstream>
 #include <vector>
 #include <map>
+#include <conio.h>
 
 DWORD ParseModifiers(const std::string& modifiers_str)
 {
@@ -33,6 +34,14 @@ DWORD ParseModifiers(const std::string& modifiers_str)
 	modifiers |= modifier_map[mod];
 
 	return modifiers;
+}
+
+void HandleConfigError(HWND& thisHandle, std::string key, std::string value)
+{
+	ShowWindow(thisHandle, SW_SHOW);
+	std::cerr << "Error: " << key << "=" << value << " in config is incorrect.\n";
+	_getch();
+	exit(0);
 }
 
 int main()
@@ -60,12 +69,27 @@ int main()
     std::filesystem::path exePath = directoryPath;
     std::filesystem::path filePath = exePath / "DisableTaskbarConfig.txt";
     if (std::filesystem::exists(filePath)) {
-	    int pos;
+	    
+		int pos;
 	    std::ifstream ConfigFile(filePath);
-	    getline(ConfigFile, modifiersStr);
+	    
+		getline(ConfigFile, modifiersStr);
 	    pos = modifiersStr.find(delimiter);
 	    modifiersStr = modifiersStr.substr(pos + 1, modifiersStr.length());
-	    getline(ConfigFile, shortcutKey);
+		DWORD modifiers = 0;
+		size_t start = 0;
+		size_t end = 0;
+		while ((end = modifiersStr.find('|', start)) != std::string::npos) {
+			std::string mod = modifiersStr.substr(start, end - start);
+			if (mod != "MOD_ALT" && mod != "MOD_CONTROL" && mod != "MOD_SHIFT" && mod != "MOD_WIN")
+				HandleConfigError(thisHandle, "Modifiers", modifiersStr);
+			start = end + 1;
+		}
+		std::string mod = modifiersStr.substr(start);
+		if (mod != "MOD_ALT" && mod != "MOD_CONTROL" && mod != "MOD_SHIFT" && mod != "MOD_WIN")
+			HandleConfigError(thisHandle, "Modifiers", modifiersStr);
+
+		getline(ConfigFile, shortcutKey);
 	    pos = shortcutKey.find(delimiter);
 	    shortcutKey = shortcutKey.substr(pos + 1, shortcutKey.length());
 	    getline(ConfigFile, line);
