@@ -13,7 +13,8 @@
 
 DWORD ParseModifiers(const std::string& modifiers_str)
 {
-    std::map<std::string, DWORD> modifier_map = {
+    std::map<std::string, DWORD> modifier_map =
+    {
         {"MOD_ALT", MOD_ALT},
         {"MOD_CONTROL", MOD_CONTROL},
         {"MOD_SHIFT", MOD_SHIFT},
@@ -24,7 +25,8 @@ DWORD ParseModifiers(const std::string& modifiers_str)
     size_t start = 0;
     size_t end = 0;
 
-    while ((end = modifiers_str.find('|', start)) != std::string::npos) {
+    while ((end = modifiers_str.find('|', start)) != std::string::npos)
+    {
         std::string mod = modifiers_str.substr(start, end - start);
         modifiers |= modifier_map[mod];
         start = end + 1;
@@ -57,7 +59,8 @@ int main()
     HWND thisHandle = GetConsoleWindow();
 
     bool visible = true;
-    while (visible) {
+    while (visible)
+    {
         ShowWindow(thisHandle, SW_HIDE);
         visible = IsWindowVisible(thisHandle);
     }
@@ -75,7 +78,8 @@ int main()
     std::wstring directoryPath = std::wstring(buffer).substr(0, pos);
     std::filesystem::path exePath = directoryPath;
     std::filesystem::path filePath = exePath / "DisableTaskbarConfig.txt";
-    if (std::filesystem::exists(filePath)) {
+    if (std::filesystem::exists(filePath))
+    {
 
         int pos;
         std::ifstream ConfigFile(filePath);
@@ -86,7 +90,8 @@ int main()
         DWORD modifiers = 0;
         size_t start = 0;
         size_t end = 0;
-        while ((end = modifiersStr.find('|', start)) != std::string::npos) {
+        while ((end = modifiersStr.find('|', start)) != std::string::npos)
+        {
             std::string mod = modifiersStr.substr(start, end - start);
             if (mod != "MOD_ALT" && mod != "MOD_CONTROL" && mod != "MOD_SHIFT" && mod != "MOD_WIN")
                 HandleConfigError(thisHandle, "Modifiers", modifiersStr);
@@ -107,7 +112,8 @@ int main()
         line = line.substr(pos + 1, line.length());
         std::stringstream ss(line);
         ss >> delayAmount;
-        if (ss.fail()) {
+        if (ss.fail())
+        {
             HandleConfigError(thisHandle, "DelayAmount", line);
         }
 
@@ -124,26 +130,31 @@ int main()
 
         ConfigFile.close();
     }
-    else {
+    else
+    {
         std::wcout << L"File does not exist: " << filePath << std::endl;
         std::ofstream file(filePath);
-        if (file) {
+        if (file)
+        {
             std::cout << "File created successfully." << std::endl;
         }
-        else {
+        else
+        {
             std::cerr << "Failed to create the file." << std::endl;
             return 1;
         }
         file.close();
         std::ofstream ConfigFile(filePath, std::ios::app);
-        if (ConfigFile) {
+        if (ConfigFile)
+        {
             ConfigFile << "Modifiers=MOD_CONTROL" << std::endl;
             ConfigFile << "ShortcutKey=0x30" << std::endl;
             ConfigFile << "DelayAmount=10" << std::endl;
             ConfigFile << "ExtraDelay=False" << std::endl;
             std::cout << "Data written to the file successfully." << std::endl;
         }
-        else {
+        else
+        {
             std::cerr << "Failed to open the file for writing." << std::endl;
         }
         ConfigFile.close();
@@ -166,13 +177,15 @@ int main()
 
     if (monitorCount == 1)
     {
-        if (!taskbar) {
+        if (!taskbar)
+        {
             MessageBox(NULL, L"Failed to find taskbar", L"Error", MB_OK);
             return -1;
         }
         LONG_PTR style = GetWindowLongPtr(taskbar, GWL_EXSTYLE);
 
-        if (!(style & WS_EX_LAYERED)) {
+        if (!(style & WS_EX_LAYERED))
+        {
             SetWindowLongPtr(taskbar, GWL_EXSTYLE, style | WS_EX_LAYERED);
         }
 
@@ -182,22 +195,27 @@ int main()
     else if (monitorCount > 1)
     {
         HWND primaryTaskbar = FindWindow(L"Shell_TrayWnd", NULL);
-        if (primaryTaskbar) {
+        if (primaryTaskbar)
+        {
             taskbars.push_back(primaryTaskbar);
         }
 
         HWND secondaryTaskbar = NULL;
-        do {
+        do
+        {
             secondaryTaskbar = FindWindowEx(NULL, secondaryTaskbar, L"Shell_SecondaryTrayWnd", NULL);
-            if (secondaryTaskbar) {
+            if (secondaryTaskbar)
+            {
                 taskbars.push_back(secondaryTaskbar);
             }
         } while (secondaryTaskbar != NULL);
 
-        for (HWND hwnd : taskbars) {
+        for (HWND hwnd : taskbars)
+        {
             LONG_PTR style = GetWindowLongPtr(hwnd, GWL_EXSTYLE);
 
-            if (!(style & WS_EX_LAYERED)) {
+            if (!(style & WS_EX_LAYERED))
+            {
                 SetWindowLongPtr(hwnd, GWL_EXSTYLE, style | WS_EX_LAYERED);
             }
 
@@ -208,23 +226,23 @@ int main()
 
     MSG msg = { 0 };
 
-    while (true) {
+    while (true)
+    {
         if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE) != 0)
         {
             if (msg.message == WM_HOTKEY)
             {
-                if (msg.wParam == 1) {
+                if (msg.wParam == 1)
+                {
                     if (extraDelayEnabled)
                         Sleep(5000);
                     if (monitorCount > 1)
                     {
-                        for (HWND hwnd : taskbars) {
+                        for (HWND hwnd : taskbars)
                             SetLayeredWindowAttributes(hwnd, 0, 255, LWA_ALPHA);
-                        }
                         Sleep(delayAmount * 1000);
-                        for (HWND hwnd : taskbars) {
+                        for (HWND hwnd : taskbars)
                             SetLayeredWindowAttributes(hwnd, 0, 0, LWA_ALPHA);
-                        }
                     }
                     else
                     {
