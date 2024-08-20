@@ -44,6 +44,13 @@ void HandleConfigError(HWND& thisHandle, std::string key, std::string value)
     exit(0);
 }
 
+BOOL MonitorEnumProc(HMONITOR hMonitor, HDC hdcMonitor, LPRECT lprcMonitor, LPARAM dwData)
+{
+    int* count = reinterpret_cast<int*>(dwData);
+    (*count)++;
+    return TRUE;
+}
+
 int main()
 {
 
@@ -151,25 +158,57 @@ int main()
         std::cout << "Failed to register hot key 1. Your config file may be incorrect." << std::endl;
     }
 
+    int monitorCount = 0;
+    EnumDisplayMonitors(NULL, NULL, MonitorEnumProc, reinterpret_cast<LPARAM>(&monitorCount));
+
+    HWND taskbar = FindWindow(L"Shell_TrayWnd", NULL);;
+    std::vector<HWND> taskbars;
+
+    if (monitorCount == 1)
+    {
+        if (!taskbar) {
+            MessageBox(NULL, L"Failed to find taskbar", L"Error", MB_OK);
+            return -1;
+        }
+        LONG_PTR style = GetWindowLongPtr(taskbar, GWL_EXSTYLE);
+
+        if (!(style & WS_EX_LAYERED)) {
+            SetWindowLongPtr(taskbar, GWL_EXSTYLE, style | WS_EX_LAYERED);
+        }
+
+        BYTE alpha = 0;
+        SetLayeredWindowAttributes(taskbar, 0, alpha, LWA_ALPHA);
+    }
+    else if (monitorCount > 1)
+    {
+        HWND primaryTaskbar = FindWindow(L"Shell_TrayWnd", NULL);
+        if (primaryTaskbar) {
+            taskbars.push_back(primaryTaskbar);
+        }
+
+        HWND secondaryTaskbar = NULL;
+        do {
+            secondaryTaskbar = FindWindowEx(NULL, secondaryTaskbar, L"Shell_SecondaryTrayWnd", NULL);
+            if (secondaryTaskbar) {
+                taskbars.push_back(secondaryTaskbar);
+            }
+        } while (secondaryTaskbar != NULL);
+
+        for (HWND hwnd : taskbars) {
+            LONG_PTR style = GetWindowLongPtr(hwnd, GWL_EXSTYLE);
+
+            if (!(style & WS_EX_LAYERED)) {
+                SetWindowLongPtr(hwnd, GWL_EXSTYLE, style | WS_EX_LAYERED);
+            }
+
+            BYTE alpha = 0;
+            SetLayeredWindowAttributes(hwnd, 0, alpha, LWA_ALPHA);
+        }
+    }
+
     MSG msg = { 0 };
 
-    HWND taskbar = FindWindow(L"Shell_TrayWnd", NULL);
-    if (!taskbar) {
-        MessageBox(NULL, L"Failed to find taskbar", L"Error", MB_OK);
-        return -1;
-    }
-
-    LONG_PTR style = GetWindowLongPtr(taskbar, GWL_EXSTYLE);
-
-    if (!(style & WS_EX_LAYERED)) {
-        SetWindowLongPtr(taskbar, GWL_EXSTYLE, style | WS_EX_LAYERED);
-    }
-
-    BYTE alpha = 0;
-    SetLayeredWindowAttributes(taskbar, 0, alpha, LWA_ALPHA);
-
     while (true) {
-
         if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE) != 0)
         {
             if (msg.message == WM_HOTKEY)
@@ -177,9 +216,22 @@ int main()
                 if (msg.wParam == 1) {
                     if (extraDelayEnabled)
                         Sleep(5000);
-                    SetLayeredWindowAttributes(taskbar, 0, 255, LWA_ALPHA);
-                    Sleep(delayAmount * 1000);
-                    SetLayeredWindowAttributes(taskbar, 0, 0, LWA_ALPHA);
+                    if (monitorCount > 1)
+                    {
+                        for (HWND hwnd : taskbars) {
+                            SetLayeredWindowAttributes(hwnd, 0, 255, LWA_ALPHA);
+                        }
+                        Sleep(delayAmount * 1000);
+                        for (HWND hwnd : taskbars) {
+                            SetLayeredWindowAttributes(hwnd, 0, 0, LWA_ALPHA);
+                        }
+                    }
+                    else
+                    {
+                        SetLayeredWindowAttributes(taskbar, 0, 255, LWA_ALPHA);
+                        Sleep(delayAmount * 1000);
+                        SetLayeredWindowAttributes(taskbar, 0, 0, LWA_ALPHA);
+                    }
                 }
             }
         }
