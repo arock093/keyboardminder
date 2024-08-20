@@ -47,35 +47,35 @@ void HandleConfigError(HWND& thisHandle, std::string key, std::string value)
 int main()
 {
 
-    HWND thisHandle = GetConsoleWindow();
+	HWND thisHandle = GetConsoleWindow();
 
-    bool visible = true;
-    while (visible) {
-        ShowWindow(thisHandle, SW_HIDE);
-        visible = IsWindowVisible(thisHandle);
-    }
+	bool visible = true;
+	while (visible) {
+		ShowWindow(thisHandle, SW_HIDE);
+		visible = IsWindowVisible(thisHandle);
+	}
 
-    std::string delimiter = "=";
-    std::string modifiersStr = "MOD_CONTROL";
-    std::string shortcutKey = "0x30";
-    int delayAmount = 10;
-    std::string line = "False";
-    bool extraDelayEnabled = false;
+	std::string delimiter = "=";
+	std::string modifiersStr = "MOD_CONTROL";
+	std::string shortcutKey = "0x30";
+	int delayAmount = 10;
+	std::string line = "False";
+	bool extraDelayEnabled = false;
 
-    TCHAR buffer[MAX_PATH] = { 0 };
-    GetModuleFileName(NULL, buffer, MAX_PATH);
-    std::wstring::size_type pos = std::wstring(buffer).find_last_of(L"\\/");
-    std::wstring directoryPath = std::wstring(buffer).substr(0, pos);
-    std::filesystem::path exePath = directoryPath;
-    std::filesystem::path filePath = exePath / "DisableTaskbarConfig.txt";
-    if (std::filesystem::exists(filePath)) {
-	    
+	TCHAR buffer[MAX_PATH] = { 0 };
+	GetModuleFileName(NULL, buffer, MAX_PATH);
+	std::wstring::size_type pos = std::wstring(buffer).find_last_of(L"\\/");
+	std::wstring directoryPath = std::wstring(buffer).substr(0, pos);
+	std::filesystem::path exePath = directoryPath;
+	std::filesystem::path filePath = exePath / "DisableTaskbarConfig.txt";
+	if (std::filesystem::exists(filePath)) {
+
 		int pos;
-	    std::ifstream ConfigFile(filePath);
-	    
+		std::ifstream ConfigFile(filePath);
+
 		getline(ConfigFile, modifiersStr);
-	    pos = modifiersStr.find(delimiter);
-	    modifiersStr = modifiersStr.substr(pos + 1, modifiersStr.length());
+		pos = modifiersStr.find(delimiter);
+		modifiersStr = modifiersStr.substr(pos + 1, modifiersStr.length());
 		DWORD modifiers = 0;
 		size_t start = 0;
 		size_t end = 0;
@@ -90,93 +90,99 @@ int main()
 			HandleConfigError(thisHandle, "Modifiers", modifiersStr);
 
 		getline(ConfigFile, shortcutKey);
-	    pos = shortcutKey.find(delimiter);
-	    shortcutKey = shortcutKey.substr(pos + 1, shortcutKey.length());
-	    getline(ConfigFile, line);
-	    pos = line.find(delimiter);
-	    line = line.substr(pos + 1, line.length());
-	    std::stringstream ss(line);
-	    ss >> delayAmount;
-	    if (ss.fail()) {
-		    std::cerr << "Error: Not a valid integer in line: " << line << std::endl;
-	    }
-	    else {
-		    std::cout << "Read int value: " << delayAmount << std::endl;
-	    }
-	    getline(ConfigFile, line);
-	    pos = line.find(delimiter);
-	    line = line.substr(pos + 1, line.length());
-	    std::transform(line.begin(), line.end(), line.begin(), [](unsigned char c) { return std::tolower(c); });
-	    if (line == "true")
-		    extraDelayEnabled = true;
-	    ConfigFile.close();
-    }
-    else {
-	    std::wcout << L"File does not exist: " << filePath << std::endl;
-	    std::ofstream file(filePath);
-	    if (file) {
-		    std::cout << "File created successfully." << std::endl;
-	    }
-	    else {
-		    std::cerr << "Failed to create the file." << std::endl;
-		    return 1;
-	    }
-	    file.close();
-	    std::ofstream ConfigFile(filePath, std::ios::app);
-	    if (ConfigFile) {
-		    ConfigFile << "Modifiers=MOD_CONTROL" << std::endl;
-		    ConfigFile << "ShortcutKey=0x30" << std::endl;
-		    ConfigFile << "DelayAmount=10" << std::endl;
-		    ConfigFile << "ExtraDelay=False" << std::endl;
-		    std::cout << "Data written to the file successfully." << std::endl;
-	    }
-	    else {
-		    std::cerr << "Failed to open the file for writing." << std::endl;
-	    }
-	    ConfigFile.close();
-    }
+		pos = shortcutKey.find(delimiter);
+		shortcutKey = shortcutKey.substr(pos + 1, shortcutKey.length());
+		if (!(shortcutKey.find("0x") != std::string::npos) || shortcutKey.length() != 4)
+			HandleConfigError(thisHandle, "ShortcutKey", shortcutKey);
 
-    unsigned long ul = stoul(shortcutKey, nullptr, 0);
-    DWORD modifiers = ParseModifiers(modifiersStr);
+		getline(ConfigFile, line);
+		pos = line.find(delimiter);
+		line = line.substr(pos + 1, line.length());
+		std::stringstream ss(line);
+		ss >> delayAmount;
+		if (ss.fail()) {
+			HandleConfigError(thisHandle, "DelayAmount", line);
+		}
 
-    if (modifiers == 0 || !RegisterHotKey(NULL, 1, modifiers, ul))
-    {
-        ShowWindow(thisHandle, SW_SHOW);
-        std::cout << "Failed to register hot key 1. Your config file may be incorrect." << std::endl;
-    }
+		getline(ConfigFile, line);
+		pos = line.find(delimiter);
+		line = line.substr(pos + 1, line.length());
+		std::transform(line.begin(), line.end(), line.begin(), [](unsigned char c) { return std::tolower(c); });
+		if (line == "true")
+			extraDelayEnabled = true;
+		else if (line == "false")
+			extraDelayEnabled = false;
+		else
+			HandleConfigError(thisHandle, "ExtraDelay", line);
 
-    MSG msg = { 0 };
+		ConfigFile.close();
+	}
+	else {
+		std::wcout << L"File does not exist: " << filePath << std::endl;
+		std::ofstream file(filePath);
+		if (file) {
+			std::cout << "File created successfully." << std::endl;
+		}
+		else {
+			std::cerr << "Failed to create the file." << std::endl;
+			return 1;
+		}
+		file.close();
+		std::ofstream ConfigFile(filePath, std::ios::app);
+		if (ConfigFile) {
+			ConfigFile << "Modifiers=MOD_CONTROL" << std::endl;
+			ConfigFile << "ShortcutKey=0x30" << std::endl;
+			ConfigFile << "DelayAmount=10" << std::endl;
+			ConfigFile << "ExtraDelay=False" << std::endl;
+			std::cout << "Data written to the file successfully." << std::endl;
+		}
+		else {
+			std::cerr << "Failed to open the file for writing." << std::endl;
+		}
+		ConfigFile.close();
+	}
 
-    HWND taskbar = FindWindow(L"Shell_TrayWnd", NULL);
-    if (!taskbar) {
-        MessageBox(NULL, L"Failed to find taskbar", L"Error", MB_OK);
-        return -1;
-    }
+	unsigned long ul = stoul(shortcutKey, nullptr, 0);
+	DWORD modifiers = ParseModifiers(modifiersStr);
 
-    LONG_PTR style = GetWindowLongPtr(taskbar, GWL_EXSTYLE);
+	if (modifiers == 0 || !RegisterHotKey(NULL, 1, modifiers, ul))
+	{
+		ShowWindow(thisHandle, SW_SHOW);
+		std::cout << "Failed to register hot key 1. Your config file may be incorrect." << std::endl;
+	}
 
-    if (!(style & WS_EX_LAYERED)) {
-        SetWindowLongPtr(taskbar, GWL_EXSTYLE, style | WS_EX_LAYERED);
-    }
+	MSG msg = { 0 };
 
-    BYTE alpha = 0;
-    SetLayeredWindowAttributes(taskbar, 0, alpha, LWA_ALPHA);
+	HWND taskbar = FindWindow(L"Shell_TrayWnd", NULL);
+	if (!taskbar) {
+		MessageBox(NULL, L"Failed to find taskbar", L"Error", MB_OK);
+		return -1;
+	}
 
-    while (true) {
+	LONG_PTR style = GetWindowLongPtr(taskbar, GWL_EXSTYLE);
 
-        if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE) != 0)
-        {
-            if (msg.message == WM_HOTKEY)
-            {
-                if (msg.wParam == 1) {
-                    if (extraDelayEnabled)
-				        Sleep(5000);
-                    SetLayeredWindowAttributes(taskbar, 0, 255, LWA_ALPHA);
-                    Sleep(delayAmount * 1000);
-                    SetLayeredWindowAttributes(taskbar, 0, 0, LWA_ALPHA);
-                }
-            }
-        }
-        Sleep(500);
-    }
+	if (!(style & WS_EX_LAYERED)) {
+		SetWindowLongPtr(taskbar, GWL_EXSTYLE, style | WS_EX_LAYERED);
+	}
+
+	BYTE alpha = 0;
+	SetLayeredWindowAttributes(taskbar, 0, alpha, LWA_ALPHA);
+
+	while (true) {
+
+		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE) != 0)
+		{
+			if (msg.message == WM_HOTKEY)
+			{
+				if (msg.wParam == 1) {
+					if (extraDelayEnabled)
+						Sleep(5000);
+					SetLayeredWindowAttributes(taskbar, 0, 255, LWA_ALPHA);
+					Sleep(delayAmount * 1000);
+					SetLayeredWindowAttributes(taskbar, 0, 0, LWA_ALPHA);
+				}
+			}
+		}
+		Sleep(500);
+	}
 }
