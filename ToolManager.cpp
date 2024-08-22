@@ -192,13 +192,24 @@ int StopProcess(std::wstring processName)
     return 0;
 }
 
-int GetOption() {
+int GetOption(int numOptions) {
     int option;
     std::cin >> option;
-    while (option != 1 && option != 2)
+    if (numOptions == 2)
     {
-        std::cout << "That is not an option. Please try again.\n";
-        std::cin >> option;
+        while (option != 1 && option != 2)
+        {
+            std::cout << "That is not an option. Please try again.\n";
+            std::cin >> option;
+        }
+    }
+    else if (numOptions == 3)
+    {
+        while (option != 1 && option != 2 && option != 3)
+        {
+            std::cout << "That is not an option. Please try again.\n";
+            std::cin >> option;
+        }
     }
     return option;
 }
@@ -235,7 +246,7 @@ void StartTools() {
 
     std::vector<std::wstring> tools;
     std::cout << "1) Start all tools.\n2) Start some tools.\n";
-    int option = GetOption();
+    int option = GetOption(2);
     int duration = 0;
     std::cout << "How long do you want to run tools for? Enter an amount in minutes or nothing to run continuously: ";
     //std::cin >> duration;
@@ -295,7 +306,7 @@ void PauseTools() {
 
     std::vector<std::wstring> tools;
     std::cout << "1) Pause all tools.\n2) Pause some tools.\n";
-    int option = GetOption();
+    int option = GetOption(2);
     int duration = 0;
     std::cout << "How long do you want to pause tool(s) for? In minutes: ";
     std::cin >> duration;
@@ -333,7 +344,7 @@ void StopTools() {
 
     std::vector<std::wstring> tools;
     std::cout << "1) Stop all tools.\n2) Stop some tools.\n";
-    int option = GetOption();
+    int option = GetOption(2);
     if (option == 1)
     {
         for (int i = 0; i < 3; i++)
@@ -573,7 +584,7 @@ int main(int argc, char* argv[])
         else if (mode == 1)
         {
             std::cout << "1) Start tool(s).\n2) Pause/Stop tool(s).\n";
-            option = GetOption();
+            option = GetOption(2);
             if (option == 1)
             {
                 StartTools();
@@ -581,7 +592,7 @@ int main(int argc, char* argv[])
             else if (option == 2)
             {
                 std::cout << "1) Pause tool(s).\n2) Stop tool(s).\n";
-                option = GetOption();
+                option = GetOption(2);
                 if (option == 1)
                 {
                     PauseTools();
@@ -595,7 +606,7 @@ int main(int argc, char* argv[])
         else if (mode == 2)
         {
             std::cout << "1) Pause tool(s).\n2) Stop tool(s).\n";
-            option = GetOption();
+            option = GetOption(2);
             if (option == 1)
             {
                 PauseTools();
