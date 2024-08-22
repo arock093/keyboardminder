@@ -12,16 +12,19 @@
 const std::wstring processNames[3] = { L"DisableTaskbar-x64.exe", L"RequireCapsLock.exe", L"TimeBetweenClicks.exe" };
 bool toolEnabled[3] = { false,false,false };
 
-std::wstring GetProcessName(DWORD processID) {
+std::wstring GetProcessName(DWORD processID)
+{
     TCHAR processName[MAX_PATH] = TEXT("<unknown>");
 
     HANDLE hProcess = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, processID);
 
-    if (hProcess) {
+    if (hProcess)
+    {
         HMODULE hMod;
         DWORD cbNeeded;
 
-        if (EnumProcessModules(hProcess, &hMod, sizeof(hMod), &cbNeeded)) {
+        if (EnumProcessModules(hProcess, &hMod, sizeof(hMod), &cbNeeded))
+        {
             GetModuleBaseName(hProcess, hMod, processName, sizeof(processName) / sizeof(TCHAR));
         }
     }
@@ -31,20 +34,25 @@ std::wstring GetProcessName(DWORD processID) {
     return processName;
 }
 
-bool IsProcessRunning(const std::wstring& processNameToCheck) {
+bool IsProcessRunning(const std::wstring& processNameToCheck)
+{
     DWORD processes[1024], cbNeeded, processCount;
 
-    if (!EnumProcesses(processes, sizeof(processes), &cbNeeded)) {
+    if (!EnumProcesses(processes, sizeof(processes), &cbNeeded))
+    {
         std::cerr << "Failed to enumerate processes." << std::endl;
         return false;
     }
 
     processCount = cbNeeded / sizeof(DWORD);
 
-    for (unsigned int i = 0; i < processCount; ++i) {
-        if (processes[i] != 0) {
+    for (unsigned int i = 0; i < processCount; ++i)
+    {
+        if (processes[i] != 0)
+        {
             std::wstring processName = GetProcessName(processes[i]);
-            if (processName == processNameToCheck) {
+            if (processName == processNameToCheck)
+            {
                 return true;
             }
         }
@@ -53,18 +61,23 @@ bool IsProcessRunning(const std::wstring& processNameToCheck) {
     return false;
 }
 
-DWORD GetProcessIdByName(const std::wstring& processName) {
+DWORD GetProcessIdByName(const std::wstring& processName)
+{
     DWORD pid = 0;
     HANDLE snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
-    if (snapshot == INVALID_HANDLE_VALUE) {
+    if (snapshot == INVALID_HANDLE_VALUE)
+    {
         return 0;
     }
 
     PROCESSENTRY32 processEntry;
     processEntry.dwSize = sizeof(PROCESSENTRY32);
-    if (Process32First(snapshot, &processEntry)) {
-        do {
-            if (processName == processEntry.szExeFile) {
+    if (Process32First(snapshot, &processEntry))
+    {
+        do
+        {
+            if (processName == processEntry.szExeFile)
+            {
                 pid = processEntry.th32ProcessID;
                 break;
             }
@@ -77,7 +90,8 @@ DWORD GetProcessIdByName(const std::wstring& processName) {
 
 int StartProcess(std::wstring processName)
 {
-    if (processName == L"DisableTaskbar" || processName == L"DisableTaskbar.exe") {
+    if (processName == L"DisableTaskbar" || processName == L"DisableTaskbar.exe")
+    {
         processName = L"DisableTaskbar-x64.exe";
     }
     else if (processName == L"RequireCapsLock")
@@ -138,7 +152,8 @@ int StartProcess(std::wstring processName)
 
 int StopProcess(std::wstring processName)
 {
-    if (processName == L"DisableTaskbar" || processName == L"DisableTaskbar.exe") {
+    if (processName == L"DisableTaskbar" || processName == L"DisableTaskbar.exe")
+    {
         processName = L"DisableTaskbar-x64.exe";
     }
     else if (processName == L"RequireCapsLock")
@@ -155,14 +170,16 @@ int StopProcess(std::wstring processName)
     if (processName == L"DisableTaskbar-x64.exe")
     {
         HWND taskbar = FindWindow(L"Shell_TrayWnd", NULL);
-        if (!taskbar) {
+        if (!taskbar)
+        {
             MessageBox(NULL, L"Failed to find taskbar", L"Error", MB_OK);
             return -1;
         }
 
         LONG_PTR style = GetWindowLongPtr(taskbar, GWL_EXSTYLE);
 
-        if (!(style & WS_EX_LAYERED)) {
+        if (!(style & WS_EX_LAYERED))
+        {
             SetWindowLongPtr(taskbar, GWL_EXSTYLE, style | WS_EX_LAYERED);
         }
 
@@ -171,18 +188,21 @@ int StopProcess(std::wstring processName)
     }
 
     DWORD pid = GetProcessIdByName(processName);
-    if (pid == 0) {
+    if (pid == 0)
+    {
         std::cerr << "Process not found." << std::endl;
         return 1;
     }
 
     HANDLE processHandle = OpenProcess(PROCESS_TERMINATE, FALSE, pid);
-    if (processHandle == NULL) {
+    if (processHandle == NULL)
+    {
         std::cerr << "Failed to open process. Error: " << GetLastError() << std::endl;
         return 1;
     }
 
-    if (!TerminateProcess(processHandle, 0)) {
+    if (!TerminateProcess(processHandle, 0))
+    {
         std::cerr << "Failed to terminate process. Error: " << GetLastError() << std::endl;
         CloseHandle(processHandle);
         return 1;
@@ -194,7 +214,8 @@ int StopProcess(std::wstring processName)
     return 0;
 }
 
-int GetOption(int numOptions) {
+int GetOption(int numOptions)
+{
     int option;
     std::cin >> option;
     if (numOptions == 2)
@@ -247,15 +268,15 @@ void SSPTools(std::wstring command, std::vector<std::wstring>& tools) {
     }
 }
 
-void StartTools() {
+void StartTools()
+{
 
     std::vector<std::wstring> tools;
     std::cout << "1) Start all tools.\n2) Start some tools.\n";
     int option = GetOption(2);
     int duration = 0;
     std::cout << "How long do you want to run tools for? Enter an amount in minutes or nothing to run continuously: ";
-    //std::cin >> duration;
-    
+
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     std::string in;
     std::getline(std::cin, in);
@@ -265,10 +286,12 @@ void StartTools() {
     {
         std::istringstream ss(in);
         int x;
-        if (!(ss >> x)) {
+        if (!(ss >> x))
+        {
             std::cerr << "Invalid number: " << in << '\n';
         }
-        else if (!ss.eof()) {
+        else if (!ss.eof())
+        {
             std::cerr << "Trailing characters after number: " << in << '\n';
         }
         duration = x;
@@ -308,7 +331,8 @@ void StartTools() {
     }
 }
 
-void PauseTools() {
+void PauseTools()
+{
 
     std::vector<std::wstring> tools;
     std::cout << "1) Pause all tools.\n2) Pause some tools.\n";
@@ -348,7 +372,8 @@ void PauseTools() {
     }
 }
 
-void StopTools() {
+void StopTools()
+{
 
     std::vector<std::wstring> tools;
     std::cout << "1) Stop all tools.\n2) Stop some tools.\n";
@@ -367,7 +392,8 @@ void StopTools() {
     }
 }
 
-void RestartTools() {
+void RestartTools()
+{
 
     std::vector<std::wstring> tools;
     std::cout << "1) Restart all tools.\n2) Restart some tools.\n";
@@ -399,7 +425,8 @@ int main(int argc, char* argv[])
     std::wstring directoryPath = std::wstring(buffer).substr(0, pos);
     std::filesystem::path exePath = directoryPath;
     std::filesystem::path filePath = exePath / "ToolManagerConfig.txt";
-    if (std::filesystem::exists(filePath)) {
+    if (std::filesystem::exists(filePath))
+    {
         int pos;
         std::ifstream ConfigFile(filePath);
         std::string line = "";
@@ -415,25 +442,30 @@ int main(int argc, char* argv[])
                 std::cerr << line << " is not a valid tool name in config." << std::endl;
         }
     }
-    else {
+    else
+    {
         std::wcout << L"File does not exist: " << filePath << std::endl;
         std::ofstream file(filePath);
-        if (file) {
+        if (file)
+        {
             std::cout << "File created successfully." << std::endl;
         }
-        else {
+        else
+        {
             std::cerr << "Failed to create the file." << std::endl;
             return 1;
         }
         file.close();
         std::ofstream ConfigFile(filePath, std::ios::app);
-        if (ConfigFile) {
+        if (ConfigFile)
+        {
             ConfigFile << "DisableTaskbar" << std::endl;
             ConfigFile << "RequireCapsLock" << std::endl;
             ConfigFile << "TimeBetweenClicks" << std::endl;
             std::cout << "Data written to the file successfully." << std::endl;
         }
-        else {
+        else
+        {
             std::cerr << "Failed to open the file for writing." << std::endl;
         }
         ConfigFile.close();
@@ -453,7 +485,8 @@ int main(int argc, char* argv[])
         std::vector<std::wstring> tools;
         bool checkForToolNames = false;
 
-        while (i < argc) {
+        while (i < argc)
+        {
             if (strcmp(argv[i], "start") == 0)
             {
                 command = "start";
@@ -478,10 +511,12 @@ int main(int argc, char* argv[])
             {
                 std::istringstream ss(argv[i + 1]);
                 int x;
-                if (!(ss >> x)) {
+                if (!(ss >> x))
+                {
                     std::cerr << "Invalid number: " << argv[1 + 1] << '\n';
                 }
-                else if (!ss.eof()) {
+                else if (!ss.eof())
+                {
                     std::cerr << "Trailing characters after number: " << argv[1 + 1] << '\n';
                 }
                 duration = x;
@@ -504,10 +539,12 @@ int main(int argc, char* argv[])
             {
                 std::istringstream ss(argv[i + 1]);
                 int x;
-                if (!(ss >> x)) {
+                if (!(ss >> x))
+                {
                     std::cerr << "Invalid number: " << argv[1 + 1] << '\n';
                 }
-                else if (!ss.eof()) {
+                else if (!ss.eof())
+                {
                     std::cerr << "Trailing characters after number: " << argv[1 + 1] << '\n';
                 }
                 sleep = x;
@@ -629,8 +666,7 @@ int main(int argc, char* argv[])
             {
                 std::wstring toolsString;
                 if (command == "start")
-                {
-                    
+                {   
                     for (int i = 0; i < tools.size(); i++)
                     {
                         StartProcess(tools[i]);
@@ -649,7 +685,6 @@ int main(int argc, char* argv[])
                     std::wstring ws = L"start " + toolsString + L"- s " + std::to_wstring(duration);
                     ShellExecute(NULL, L"open", L"ToolManager.exe", ws.c_str(), NULL, SW_HIDE);
                 }
-
             }
         }
     }
@@ -660,17 +695,21 @@ int main(int argc, char* argv[])
 
         DWORD processes[1024], cbNeeded, processCount;
 
-        if (!EnumProcesses(processes, sizeof(processes), &cbNeeded)) {
+        if (!EnumProcesses(processes, sizeof(processes), &cbNeeded))
+        {
             std::cerr << "Failed to enumerate processes." << std::endl;
             return false;
         }
 
         processCount = cbNeeded / sizeof(DWORD);
 
-        for (unsigned int i = 0; i < processCount; ++i) {
-            if (processes[i] != 0) {
+        for (unsigned int i = 0; i < processCount; ++i)
+        {
+            if (processes[i] != 0)
+            {
                 std::wstring processName = GetProcessName(processes[i]);
-                if (processName == processNames[0] || processName == processNames[1] || processName == processNames[2]) {
+                if (processName == processNames[0] || processName == processNames[1] || processName == processNames[2])
+                {
                     count++;
                 }
             }
