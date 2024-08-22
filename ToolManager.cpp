@@ -390,67 +390,28 @@ int main(int argc, char* argv[])
         int sleep = 0;
         std::string command = "";
         std::vector<std::wstring> tools;
+        bool checkForToolNames = false;
 
         while (i < argc) {
             if (strcmp(argv[i], "start") == 0)
             {
                 command = "start";
-                
-                i++;
-                while (i < argc && argv[i][0] != '-')
-                {
-                    std::string s = argv[i];
-                    std::wstring ws(s.begin(), s.end());
-                    tools.push_back(ws);
-                    i++;
-                }
-                if (i != argc && argv[i][0] == '-')
-                    i--;
+                checkForToolNames = true;
             }
             else if (strcmp(argv[i], "pause") == 0)
             {
                 command = "pause";
-
-                i++;
-                while (i < argc && argv[i][0] != '-')
-                {
-                    std::string s = argv[i];
-                    std::wstring ws(s.begin(), s.end());
-                    tools.push_back(ws);
-                    i++;
-                }
-                if (i != argc && argv[i][0] == '-')
-                    i--;
+                checkForToolNames = true;
             }
             else if (strcmp(argv[i], "stop") == 0)
             {
                 command = "stop";
-
-                i++;
-                while (i < argc && argv[i][0] != '-')
-                {
-                    std::string s = argv[i];
-                    std::wstring ws(s.begin(), s.end());
-                    tools.push_back(ws);
-                    i++;
-                }
-                if (argv[i][0] == '-')
-                    i--;
+                checkForToolNames = true;
             }
             else if (strcmp(argv[i], "restart") == 0)
             {
                 command = "restart";
-
-                i++;
-                while (i < argc && argv[i][0] != '-')
-                {
-                    std::string s = argv[i];
-                    std::wstring ws(s.begin(), s.end());
-                    tools.push_back(ws);
-                    i++;
-                }
-                if (i != argc && argv[i][0] == '-')
-                    i--;
+                checkForToolNames = true;
             }
             else if (strcmp(argv[i], "-d") == 0 || strcmp(argv[i], "--duration") == 0)
             {
@@ -490,6 +451,20 @@ int main(int argc, char* argv[])
                 }
                 sleep = x;
                 i++;
+            }
+            if (checkForToolNames)
+            {
+                i++;
+                while (i < argc && argv[i][0] != '-')
+                {
+                    std::string s = argv[i];
+                    std::wstring ws(s.begin(), s.end());
+                    tools.push_back(ws);
+                    i++;
+                }
+                if (i != argc && argv[i][0] == '-')
+                    i--;
+                checkForToolNames = false;
             }
             i++;
         }
