@@ -218,26 +218,29 @@ void SSPTools(std::wstring command, std::vector<std::wstring>& tools) {
 
     for (int i = 0; i < 3; i++)
     {
-        std::string sOption = "";
-        std::wcout << command + L" " + processNames[i] + L"?\nY / N\n";
-        std::cin >> sOption;
-        while (sOption != "Y" && sOption != "y" && sOption != "N" && sOption != "n")
+        if ((command == L"Start" && !IsProcessRunning(processNames[i])) || (command != L"Start" && IsProcessRunning(processNames[i])))
         {
-            std::cout << "That is not an option. Please try again.\n";
+            std::string sOption = "";
+            std::wcout << command + L" " + processNames[i] + L"?\nY / N\n";
             std::cin >> sOption;
-        }
-        if (sOption == "Y" || sOption == "y")
-        {
-            //if (command == L"Start")
-            //    StartProcess(processNames[i]);
-            if (command == L"Stop" || command == L"Pause")
-                StopProcess(processNames[i]);
+            while (sOption != "Y" && sOption != "y" && sOption != "N" && sOption != "n")
+            {
+                std::cout << "That is not an option. Please try again.\n";
+                std::cin >> sOption;
+            }
+            if (sOption == "Y" || sOption == "y")
+            {
+                //if (command == L"Start")
+                //    StartProcess(processNames[i]);
+                if (command == L"Stop" || command == L"Pause")
+                    StopProcess(processNames[i]);
 
-            tools.push_back(processNames[i]);
-        }
-        else if (sOption == "N" || sOption == "n")
-        {
-            continue;
+                tools.push_back(processNames[i]);
+            }
+            else if (sOption == "N" || sOption == "n")
+            {
+                continue;
+            }
         }
     }
 }
@@ -358,6 +361,26 @@ void StopTools() {
     }
 }
 
+void RestartTools() {
+
+    std::vector<std::wstring> tools;
+    std::cout << "1) Restart all tools.\n2) Restart some tools.\n";
+    int option = GetOption(2);
+    if (option == 1)
+    {
+        for (int i = 0; i < 3; i++)
+        {
+            StopProcess(processNames[i]);
+            Sleep(1000);
+            StartProcess(processNames[i]);
+        }
+    }
+    else if (option == 2)
+    {
+        SSPTools(L"Restart", tools);
+    }
+}
+
 int main(int argc, char* argv[])
 {
     if (argc > 1)
@@ -414,6 +437,21 @@ int main(int argc, char* argv[])
                 if (argv[i][0] == '-')
                     i--;
             }
+            else if (strcmp(argv[i], "restart") == 0)
+            {
+                command = "restart";
+
+                i++;
+                while (i < argc && argv[i][0] != '-')
+                {
+                    std::string s = argv[i];
+                    std::wstring ws(s.begin(), s.end());
+                    tools.push_back(ws);
+                    i++;
+                }
+                if (i != argc && argv[i][0] == '-')
+                    i--;
+            }
             else if (strcmp(argv[i], "-d") == 0 || strcmp(argv[i], "--duration") == 0)
             {
                 std::istringstream ss(argv[i + 1]);
@@ -436,8 +474,9 @@ int main(int argc, char* argv[])
                     "Commands:\nstart Start tool(s). Duration option can be included to run tool(s) temporally.\n" <<
                     "pause Pause tool(s) temporally.\n" <<
                     "stop Stop tool(s).\n" <<
+                    "restart Restart tool(s).\n" <<
                     "Options:\n-d, --duration The duration in minutes.\n" <<
-                    "Examples:\nToolManager start\nToolManager start -d 10\nToolManager stop DisableTaskbar\nToolManager pause RequireCapsLock --duration 20\nIf no tools are listed after command, it will take effect on all of them.";
+                    "Examples:\nToolManager start\nToolManager start -d 10\nToolManager stop DisableTaskbar\nToolManager pause RequireCapsLock --duration 20\nToolManager restart DisableTaskbar\nIf no tools are listed after command, it will take effect on all of them.";
             }
             else if (strcmp(argv[i], "-s") == 0 || strcmp(argv[i], "--sleep") == 0)
             {
@@ -474,6 +513,15 @@ int main(int argc, char* argv[])
                     for (int i = 0; i < 3; i++)
                     {
                         StopProcess(processNames[i]);
+                    }
+                }
+                else if (command == "restart")
+                {
+                    for (int i = 0; i < 3; i++)
+                    {
+                        StopProcess(processNames[i]);
+                        Sleep(1000);
+                        StartProcess(processNames[i]); 
                     }
                 }
             }
@@ -515,6 +563,15 @@ int main(int argc, char* argv[])
                     for (int i = 0; i < tools.size(); i++)
                     {
                         StopProcess(tools[i]);
+                    }
+                }
+                else if (command == "restart")
+                {
+                    for (int i = 0; i < tools.size(); i++)
+                    {
+                        StopProcess(processNames[i]);
+                        Sleep(1000);
+                        StartProcess(processNames[i]);
                     }
                 }
             }
@@ -576,15 +633,15 @@ int main(int argc, char* argv[])
 
         int option;
         std::vector<std::wstring> tools;
-        std::cout << "Type 1 or 2 to select an option\n";
+        std::cout << "Type 1, 2 or 3 and press Enter to select an option\n";
         if (mode == 0)
         {   
             StartTools();
         }
         else if (mode == 1)
         {
-            std::cout << "1) Start tool(s).\n2) Pause/Stop tool(s).\n";
-            option = GetOption(2);
+            std::cout << "1) Start tool(s).\n2) Pause/Stop tool(s).\n3) Restart tool(s).\n";
+            option = GetOption(3);
             if (option == 1)
             {
                 StartTools();
@@ -602,11 +659,15 @@ int main(int argc, char* argv[])
                     StopTools();
                 }
             }
+            else if (option == 3)
+            {
+                RestartTools();
+            }
         }
         else if (mode == 2)
         {
-            std::cout << "1) Pause tool(s).\n2) Stop tool(s).\n";
-            option = GetOption(2);
+            std::cout << "1) Pause tool(s).\n2) Stop tool(s).\n3) Restart tool(s).\n";
+            option = GetOption(3);
             if (option == 1)
             {
                 PauseTools();
@@ -614,6 +675,10 @@ int main(int argc, char* argv[])
             else if (option == 2)
             {
                 StopTools();
+            }
+            else if (option == 3)
+            {
+                RestartTools();
             }
         }
     }
