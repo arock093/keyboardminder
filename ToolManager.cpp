@@ -3,12 +3,14 @@
 #include <psapi.h>
 #include <tlhelp32.h>
 #include <sstream>
+#include <fstream>
 #include <vector>
 #include <filesystem>
 
 #undef max
 
 const std::wstring processNames[3] = { L"DisableTaskbar-x64.exe", L"RequireCapsLock.exe", L"TimeBetweenClicks.exe" };
+bool toolEnabled[3] = { false,false,false };
 
 std::wstring GetProcessName(DWORD processID) {
     TCHAR processName[MAX_PATH] = TEXT("<unknown>");
@@ -275,7 +277,8 @@ void StartTools() {
     {
         for (int i = 0; i < 3; i++)
         {
-            StartProcess(processNames[i]);
+            if (toolEnabled[i])
+                StartProcess(processNames[i]);
         }
     }
     else if (option == 2)
@@ -317,7 +320,8 @@ void PauseTools() {
     {
         for (int i = 0; i < 3; i++)
         {
-            StopProcess(processNames[i]);
+            if (toolEnabled[i])
+                StopProcess(processNames[i]);
         }
     }
     else if (option == 2)
@@ -331,7 +335,8 @@ void PauseTools() {
     {
         for (int i = 0; i < 3; i++)
         {
-            StartProcess(processNames[i]);
+            if (toolEnabled[i])
+                StartProcess(processNames[i]);
         }
     }
     else if (!tools.empty() && duration != 0)
@@ -352,7 +357,8 @@ void StopTools() {
     {
         for (int i = 0; i < 3; i++)
         {
-            StopProcess(processNames[i]);
+            if (toolEnabled[i])
+                StopProcess(processNames[i]);
         }
     }
     else if (option == 2)
@@ -370,9 +376,12 @@ void RestartTools() {
     {
         for (int i = 0; i < 3; i++)
         {
-            StopProcess(processNames[i]);
-            Sleep(1000);
-            StartProcess(processNames[i]);
+            if (toolEnabled[i])
+            {
+                StopProcess(processNames[i]);
+                Sleep(1000);
+                StartProcess(processNames[i]);
+            }
         }
     }
     else if (option == 2)
@@ -383,6 +392,58 @@ void RestartTools() {
 
 int main(int argc, char* argv[])
 {
+
+    TCHAR buffer[MAX_PATH] = { 0 };
+    GetModuleFileName(NULL, buffer, MAX_PATH);
+    std::wstring::size_type pos = std::wstring(buffer).find_last_of(L"\\/");
+    std::wstring directoryPath = std::wstring(buffer).substr(0, pos);
+    std::filesystem::path exePath = directoryPath;
+    std::filesystem::path filePath = exePath / "ToolManagerConfig.txt";
+    if (std::filesystem::exists(filePath)) {
+        int pos;
+        std::ifstream ConfigFile(filePath);
+        std::string line = "";
+        while (getline(ConfigFile, line))
+        {
+            if (line == "DisableTaskbar" || line == "DisableTaskbar.exe")
+                toolEnabled[0] = true;
+            else if (line == "RequireCapsLock" || line == "RequireCapsLock.exe")
+                toolEnabled[1] = true;
+            else if (line == "TimeBetweenClicks" || line == "TimeBetweenClicks.exe")
+                toolEnabled[2] = true;
+            else
+                std::cerr << line << " is not a valid tool name in config." << std::endl;
+        }
+    }
+    else {
+        std::wcout << L"File does not exist: " << filePath << std::endl;
+        std::ofstream file(filePath);
+        if (file) {
+            std::cout << "File created successfully." << std::endl;
+        }
+        else {
+            std::cerr << "Failed to create the file." << std::endl;
+            return 1;
+        }
+        file.close();
+        std::ofstream ConfigFile(filePath, std::ios::app);
+        if (ConfigFile) {
+            ConfigFile << "DisableTaskbar" << std::endl;
+            ConfigFile << "RequireCapsLock" << std::endl;
+            ConfigFile << "TimeBetweenClicks" << std::endl;
+            std::cout << "Data written to the file successfully." << std::endl;
+        }
+        else {
+            std::cerr << "Failed to open the file for writing." << std::endl;
+        }
+        ConfigFile.close();
+
+        for (int i = 0; i < 3; i++)
+        {
+            toolEnabled[i] = true;
+        }
+    }
+
     if (argc > 1)
     {
         int i = 1;
@@ -474,29 +535,41 @@ int main(int argc, char* argv[])
 
         if (tools.empty())
         {
+            int enabledToolCount = 0;
+            for (int i = 0; i < 3; i++)
+                if (toolEnabled[i])
+                    enabledToolCount++;
+            if (enabledToolCount != 3)
+               std::cout << enabledToolCount << " tools are enabled. Modify config to change." << std::endl;
+
             if (duration == 0)
             {
                 if (command == "start")
                 {
                     for (int i = 0; i < 3; i++)
                     {
-                        StartProcess(processNames[i]);
+                        if (toolEnabled[i])
+                            StartProcess(processNames[i]);
                     }
                 }
                 else if (command == "pause" || command == "stop")
                 {
                     for (int i = 0; i < 3; i++)
                     {
-                        StopProcess(processNames[i]);
+                        if (toolEnabled[i])
+                            StopProcess(processNames[i]);
                     }
                 }
                 else if (command == "restart")
                 {
                     for (int i = 0; i < 3; i++)
                     {
-                        StopProcess(processNames[i]);
-                        Sleep(1000);
-                        StartProcess(processNames[i]); 
+                        if (toolEnabled[i])
+                        {
+                            StopProcess(processNames[i]);
+                            Sleep(1000);
+                            StartProcess(processNames[i]);
+                        }
                     }
                 }
             }
@@ -506,7 +579,8 @@ int main(int argc, char* argv[])
                 {
                     for (int i = 0; i < 3; i++)
                     {
-                        StartProcess(processNames[i]);
+                        if (toolEnabled[i])
+                            StartProcess(processNames[i]);
                     }
                     std::wstring ws = L"stop -s " + std::to_wstring(duration);
                     ShellExecute(NULL, L"open", L"ToolManager.exe", ws.c_str(), NULL, SW_HIDE);
@@ -515,7 +589,8 @@ int main(int argc, char* argv[])
                 {
                     for (int i = 0; i < 3; i++)
                     {
-                        StopProcess(processNames[i]);
+                        if (toolEnabled[i])
+                            StopProcess(processNames[i]);
                     }
                     std::wstring ws = L"start -s " + std::to_wstring(duration);
                     ShellExecute(NULL, L"open", L"ToolManager.exe", ws.c_str(), NULL, SW_HIDE);
@@ -608,6 +683,14 @@ int main(int argc, char* argv[])
 
         int option;
         std::vector<std::wstring> tools;
+
+        int enabledToolCount = 0;
+        for (int i = 0; i < 3; i++)
+            if (toolEnabled[i])
+                enabledToolCount++;
+        if (enabledToolCount != 3)
+            std::cout << enabledToolCount << " tools are enabled. Modify config to change." << std::endl;
+
         std::cout << "Type 1, 2 or 3 and press Enter to select an option\n";
         if (mode == 0)
         {   
