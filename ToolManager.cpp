@@ -9,7 +9,7 @@
 
 #undef max
 
-const std::wstring processNames[3] = { L"DisableTaskbar-x64.exe", L"RequireCapsLock.exe", L"TimeBetweenClicks.exe" };
+const std::wstring processNames[3] = {L"DisableTaskbar-x64.exe", L"RequireCapsLock.exe", L"TimeBetweenClicks.exe"};
 bool toolEnabled[3] = { false,false,false };
 
 std::wstring GetProcessName(DWORD processID)
@@ -52,7 +52,7 @@ bool IsProcessRunning(const std::wstring& processNameToCheck)
         {
             std::wstring processName = GetProcessName(processes[i]);
             if (processName == processNameToCheck)
-            {
+            {        
                 return true;
             }
         }
@@ -88,10 +88,9 @@ DWORD GetProcessIdByName(const std::wstring& processName)
     return pid;
 }
 
-int StartProcess(std::wstring processName)
+bool checkProcessName(std::wstring& processName, std::string action = "Start")
 {
-    if (processName == L"DisableTaskbar" || processName == L"DisableTaskbar.exe")
-    {
+    if (processName == L"DisableTaskbar" || processName == L"DisableTaskbar.exe") {
         processName = L"DisableTaskbar-x64.exe";
     }
     else if (processName == L"RequireCapsLock")
@@ -99,122 +98,121 @@ int StartProcess(std::wstring processName)
     else if (processName == L"TimeBetweenClicks")
         processName = L"TimeBetweenClicks.exe";
 
-    if (!std::filesystem::exists(processName))
+    if (action == "Start" && !std::filesystem::exists(processName))
     {
         std::wcout << processName + L" not found. Tool needs to be in same directory as ToolManager.exe" << std::endl;
-        return 1;
+        return false;
     }
 
     if (processName != L"DisableTaskbar-x64.exe" && processName != L"RequireCapsLock.exe" && processName != L"TimeBetweenClicks.exe")
     {
         std::wcout << processName + L" is not a valid tool name." << std::endl;
-        return 1;
+        return false;
     }
-    
-    if (!IsProcessRunning(processName))
+
+    return true;
+}
+
+int StartProcess(std::wstring processName)
+{
+    if (checkProcessName(processName))
     {
-        if (processName == L"DisableTaskbar-x64.exe")
+        if (!IsProcessRunning(processName))
         {
+            if (processName == L"DisableTaskbar-x64.exe")
+            {
 
-            STARTUPINFO si;
-            PROCESS_INFORMATION pi;
+                STARTUPINFO si;
+                PROCESS_INFORMATION pi;
 
-            ZeroMemory(&si, sizeof(si));
-            si.cb = sizeof(si);
-            ZeroMemory(&pi, sizeof(pi));
+                ZeroMemory(&si, sizeof(si));
+                si.cb = sizeof(si);
+                ZeroMemory(&pi, sizeof(pi));
 
-            if (!CreateProcess(processName.c_str(),
-                NULL,
-                NULL,
-                NULL,
-                FALSE,
-                CREATE_NEW_CONSOLE,
-                NULL,
-                NULL,
-                &si,
-                &pi)
-                ) {
-                std::cerr << "CreateProcess failed (" << GetLastError() << ")" << std::endl;
-                return 1;
+                if (!CreateProcess(processName.c_str(),
+                    NULL,
+                    NULL,
+                    NULL,
+                    FALSE,
+                    CREATE_NEW_CONSOLE,
+                    NULL,
+                    NULL,
+                    &si,
+                    &pi)
+                    ) {
+                    std::cerr << "CreateProcess failed (" << GetLastError() << ")" << std::endl;
+                    return 1;
+                }
+
+                CloseHandle(pi.hProcess);
+                CloseHandle(pi.hThread);
             }
-
-            CloseHandle(pi.hProcess);
-            CloseHandle(pi.hThread);
+            else
+                ShellExecute(NULL, L"open", processName.c_str(), NULL, NULL, SW_HIDE);
         }
         else
-            ShellExecute(NULL, L"open", processName.c_str(), NULL, NULL, SW_HIDE);
+            std::wcout << processName + L" is already running." << '\n';
     }
-    else
-        std::wcout << processName + L" is already running." << '\n';
 
     return 0;
 }
 
 int StopProcess(std::wstring processName)
 {
-    if (processName == L"DisableTaskbar" || processName == L"DisableTaskbar.exe")
+    if (checkProcessName(processName, "Stop"))
     {
-        processName = L"DisableTaskbar-x64.exe";
-    }
-    else if (processName == L"RequireCapsLock")
-        processName = L"RequireCapsLock.exe";
-    else if (processName == L"TimeBetweenClicks")
-        processName = L"TimeBetweenClicks.exe";
+        if (IsProcessRunning(processName)) {
+            if (processName == L"DisableTaskbar-x64.exe")
+            {
+                HWND taskbar = FindWindow(L"Shell_TrayWnd", NULL);
+                if (!taskbar)
+                {
+                    MessageBox(NULL, L"Failed to find taskbar", L"Error", MB_OK);
+                    return -1;
+                }
 
-    if (processName != L"DisableTaskbar-x64.exe" && processName != L"RequireCapsLock.exe" && processName != L"TimeBetweenClicks.exe")
-    {
-        std::wcout << processName + L" is not a valid tool name." << std::endl;
-        return 1;
-    }
+                LONG_PTR style = GetWindowLongPtr(taskbar, GWL_EXSTYLE);
 
-    if (processName == L"DisableTaskbar-x64.exe")
-    {
-        HWND taskbar = FindWindow(L"Shell_TrayWnd", NULL);
-        if (!taskbar)
-        {
-            MessageBox(NULL, L"Failed to find taskbar", L"Error", MB_OK);
-            return -1;
+                if (!(style & WS_EX_LAYERED))
+                {
+                    SetWindowLongPtr(taskbar, GWL_EXSTYLE, style | WS_EX_LAYERED);
+                }
+
+                BYTE alpha = 0;
+                SetLayeredWindowAttributes(taskbar, 0, 255, LWA_ALPHA);
+            }
+
+            DWORD pid = GetProcessIdByName(processName);
+            if (pid == 0)
+            {
+                std::cerr << "Process not found." << std::endl;
+                return 1;
+            }
+
+            HANDLE processHandle = OpenProcess(PROCESS_TERMINATE, FALSE, pid);
+            if (processHandle == NULL)
+            {
+                std::cerr << "Failed to open process. Error: " << GetLastError() << std::endl;
+                return 1;
+            }
+
+            if (!TerminateProcess(processHandle, 0))
+            {
+                std::cerr << "Failed to terminate process. Error: " << GetLastError() << std::endl;
+                CloseHandle(processHandle);
+                return 1;
+            }
+
+            std::wcout << "Process terminated successfully." << std::endl;
+            CloseHandle(processHandle);
         }
-
-        LONG_PTR style = GetWindowLongPtr(taskbar, GWL_EXSTYLE);
-
-        if (!(style & WS_EX_LAYERED))
-        {
-            SetWindowLongPtr(taskbar, GWL_EXSTYLE, style | WS_EX_LAYERED);
-        }
-
-        BYTE alpha = 0;
-        SetLayeredWindowAttributes(taskbar, 0, 255, LWA_ALPHA);
+        else
+            std::wcout << processName << " is not running." << std::endl;
     }
-
-    DWORD pid = GetProcessIdByName(processName);
-    if (pid == 0)
-    {
-        std::cerr << "Process not found." << std::endl;
-        return 1;
-    }
-
-    HANDLE processHandle = OpenProcess(PROCESS_TERMINATE, FALSE, pid);
-    if (processHandle == NULL)
-    {
-        std::cerr << "Failed to open process. Error: " << GetLastError() << std::endl;
-        return 1;
-    }
-
-    if (!TerminateProcess(processHandle, 0))
-    {
-        std::cerr << "Failed to terminate process. Error: " << GetLastError() << std::endl;
-        CloseHandle(processHandle);
-        return 1;
-    }
-
-    std::wcout << "Process terminated successfully." << std::endl;
-    CloseHandle(processHandle);
-
     return 0;
 }
 
-int GetOption(int numOptions)
+int GetOption(int numOptions = 2)
 {
     int option;
     std::cin >> option;
@@ -273,7 +271,7 @@ void StartTools()
 
     std::vector<std::wstring> tools;
     std::cout << "1) Start all tools.\n2) Start some tools.\n";
-    int option = GetOption(2);
+    int option = GetOption();
     int duration = 0;
     std::cout << "How long do you want to run tools for? Enter an amount in minutes or nothing to run continuously: ";
 
@@ -336,7 +334,7 @@ void PauseTools()
 
     std::vector<std::wstring> tools;
     std::cout << "1) Pause all tools.\n2) Pause some tools.\n";
-    int option = GetOption(2);
+    int option = GetOption();
     int duration = 0;
     std::cout << "How long do you want to pause tool(s) for? In minutes: ";
     std::cin >> duration;
@@ -377,7 +375,7 @@ void StopTools()
 
     std::vector<std::wstring> tools;
     std::cout << "1) Stop all tools.\n2) Stop some tools.\n";
-    int option = GetOption(2);
+    int option = GetOption();
     if (option == 1)
     {
         for (int i = 0; i < 3; i++)
@@ -397,7 +395,7 @@ void RestartTools()
 
     std::vector<std::wstring> tools;
     std::cout << "1) Restart all tools.\n2) Restart some tools.\n";
-    int option = GetOption(2);
+    int option = GetOption();
     if (option == 1)
     {
         for (int i = 0; i < 3; i++)
@@ -483,29 +481,22 @@ int main(int argc, char* argv[])
         int sleep = 0;
         std::string command = "";
         std::vector<std::wstring> tools;
-        bool checkForToolNames = false;
 
         while (i < argc)
         {
-            if (strcmp(argv[i], "start") == 0)
+            if (strcmp(argv[i], "start") == 0 || strcmp(argv[i], "pause") == 0 || strcmp(argv[i], "stop") == 0 || strcmp(argv[i], "restart") == 0)
             {
-                command = "start";
-                checkForToolNames = true;
-            }
-            else if (strcmp(argv[i], "pause") == 0)
-            {
-                command = "pause";
-                checkForToolNames = true;
-            }
-            else if (strcmp(argv[i], "stop") == 0)
-            {
-                command = "stop";
-                checkForToolNames = true;
-            }
-            else if (strcmp(argv[i], "restart") == 0)
-            {
-                command = "restart";
-                checkForToolNames = true;
+                command = argv[i];
+                i++;
+                while (i < argc && argv[i][0] != '-')
+                {
+                    std::string s = argv[i];
+                    std::wstring ws(s.begin(), s.end());
+                    tools.push_back(ws);
+                    i++;
+                }
+                if (i != argc && argv[i][0] == '-')
+                    i--;
             }
             else if (strcmp(argv[i], "-d") == 0 || strcmp(argv[i], "--duration") == 0)
             {
@@ -550,25 +541,13 @@ int main(int argc, char* argv[])
                 sleep = x;
                 i++;
             }
-            if (checkForToolNames)
-            {
-                i++;
-                while (i < argc && argv[i][0] != '-')
-                {
-                    std::string s = argv[i];
-                    std::wstring ws(s.begin(), s.end());
-                    tools.push_back(ws);
-                    i++;
-                }
-                if (i != argc && argv[i][0] == '-')
-                    i--;
-                checkForToolNames = false;
-            }
             i++;
         }
 
         if (sleep != 0)
             Sleep(sleep * 60000);
+
+        std::vector<std::wstring> processes;
 
         if (tools.empty())
         {
@@ -577,114 +556,63 @@ int main(int argc, char* argv[])
                 if (toolEnabled[i])
                     enabledToolCount++;
             if (enabledToolCount != 3)
-               std::cout << enabledToolCount << " tools are enabled. Modify config to change." << std::endl;
+                std::cout << enabledToolCount << " tools are enabled. Modify config to change." << std::endl;
 
-            if (duration == 0)
+            for (int i = 0; i < 3; ++i)
             {
-                if (command == "start")
+                if (toolEnabled[i])
                 {
-                    for (int i = 0; i < 3; i++)
-                    {
-                        if (toolEnabled[i])
-                            StartProcess(processNames[i]);
-                    }
-                }
-                else if (command == "pause" || command == "stop")
-                {
-                    for (int i = 0; i < 3; i++)
-                    {
-                        if (toolEnabled[i])
-                            StopProcess(processNames[i]);
-                    }
-                }
-                else if (command == "restart")
-                {
-                    for (int i = 0; i < 3; i++)
-                    {
-                        if (toolEnabled[i])
-                        {
-                            StopProcess(processNames[i]);
-                            Sleep(1000);
-                            StartProcess(processNames[i]);
-                        }
-                    }
-                }
-            }
-            else if (duration != 0)
-            {
-                if (command == "start")
-                {
-                    for (int i = 0; i < 3; i++)
-                    {
-                        if (toolEnabled[i])
-                            StartProcess(processNames[i]);
-                    }
-                    std::wstring ws = L"stop -s " + std::to_wstring(duration);
-                    ShellExecute(NULL, L"open", L"ToolManager.exe", ws.c_str(), NULL, SW_HIDE);
-                }
-                else if (command == "pause" || command == "stop")
-                {
-                    for (int i = 0; i < 3; i++)
-                    {
-                        if (toolEnabled[i])
-                            StopProcess(processNames[i]);
-                    }
-                    std::wstring ws = L"start -s " + std::to_wstring(duration);
-                    ShellExecute(NULL, L"open", L"ToolManager.exe", ws.c_str(), NULL, SW_HIDE);
+                    processes.push_back(processNames[i]);
                 }
             }
         }
-        else if (!tools.empty())
+        else
         {
-            if (duration == 0)
+            processes = tools;
+        }
+        
+        for (const auto& process : processes)
+        {
+            if (command == "start")
             {
-                if (command == "start")
+                StartProcess(process);
+            }
+            else if (command == "pause" || command == "stop")
+            {
+                StopProcess(process);
+            }
+            else if (command == "restart")
+            {
+                StopProcess(process);
+                Sleep(1000);
+                StartProcess(process);
+            }
+        }
+
+        if (duration != 0)
+        {
+            std::wstring toolsString;
+            if (!tools.empty())
+            {
+                for (const auto& process : processes)
                 {
-                    for (int i = 0; i < tools.size(); i++)
-                    {
-                        StartProcess(tools[i]);
-                    }
-                }
-                else if (command == "pause" || command == "stop")
-                {
-                    for (int i = 0; i < tools.size(); i++)
-                    {
-                        StopProcess(tools[i]);
-                    }
-                }
-                else if (command == "restart")
-                {
-                    for (int i = 0; i < tools.size(); i++)
-                    {
-                        StopProcess(processNames[i]);
-                        Sleep(1000);
-                        StartProcess(processNames[i]);
-                    }
+                    toolsString += process + L" ";
                 }
             }
-            else if (duration != 0)
+
+            std::wstring ws;
+            if (command == "start")
             {
-                std::wstring toolsString;
-                if (command == "start")
-                {   
-                    for (int i = 0; i < tools.size(); i++)
-                    {
-                        StartProcess(tools[i]);
-                        toolsString += tools[i] + L" ";
-                    }
-                    std::wstring ws = L"stop " + toolsString + L"- s " + std::to_wstring(duration);
-                    ShellExecute(NULL, L"open", L"ToolManager.exe", ws.c_str(), NULL, SW_HIDE);
-                }
-                else if (command == "pause")
-                {
-                    for (int i = 0; i < 3; i++)
-                    {
-                        StopProcess(processNames[i]);
-                        toolsString += tools[i];
-                    }
-                    std::wstring ws = L"start " + toolsString + L"- s " + std::to_wstring(duration);
-                    ShellExecute(NULL, L"open", L"ToolManager.exe", ws.c_str(), NULL, SW_HIDE);
-                }
+                ws = L"stop " + toolsString + L"-s " + std::to_wstring(duration);
+            }
+            else if (command == "pause" || command == "stop")
+            {
+                ws = L"start " + toolsString + L"-s " + std::to_wstring(duration);
+            }
+
+            if (!ws.empty())
+            {
+                ShellExecute(NULL, L"open", L"ToolManager.exe", ws.c_str(), NULL, SW_HIDE);
             }
         }
     }
@@ -746,7 +674,7 @@ int main(int argc, char* argv[])
             else if (option == 2)
             {
                 std::cout << "1) Pause tool(s).\n2) Stop tool(s).\n";
-                option = GetOption(2);
+                option = GetOption();
                 if (option == 1)
                 {
                     PauseTools();
