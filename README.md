@@ -108,6 +108,12 @@ $ToolManagerPath = "C:\Users\UserName\Documents\Keyboardminder"
 $oldPath = [System.Environment]::GetEnvironmentVariable("PATH", "User")
 [System.Environment]::SetEnvironmentVariable("PATH", "$oldPath;$ToolManagerPath", "User")
 ```
+## Configuration
+ToolManger has a config file ToolManagerConfig where you list the tools you want to have enabled. These are the tools that will be acted upon by different actions or commands that don't specify which tools to act upon. The point of this is to be able to exclude tools you don't want to use. By default all three tools are listed.
+
+DisableTaskbar has a config file DisableTaskbarConfig where you can set the modifer key, shortcut key, delay amount, and if the extra delay after using the shortcut and when the taskbar is shown is enabled.
+The options for the modifer key are MOD_ALT, MOD_CONTROL, MOD_SHIFT, MOD_WIN.
+You can look up shortcut key codes [here](https://learn.microsoft.com/en-us/windows/win32/inputdev/virtual-key-codes). Certain combinations may or may not work.
 
 ## Contributions
 Contributions are more than welcome. Open an issue and submit a pull request if you have one. Please be respectful. 
