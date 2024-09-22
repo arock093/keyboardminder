@@ -37,6 +37,7 @@
             this.label2 = new System.Windows.Forms.Label();
             this.durationTextBox = new System.Windows.Forms.TextBox();
             this.goButton = new System.Windows.Forms.Button();
+            this.messageLabel = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // label1
@@ -114,16 +115,16 @@
             this.label2.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(336, 177);
+            this.label2.Location = new System.Drawing.Point(317, 177);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(60, 16);
+            this.label2.Size = new System.Drawing.Size(122, 16);
             this.label2.TabIndex = 6;
-            this.label2.Text = "Duration:";
+            this.label2.Text = "Duration In Minutes:";
             // 
             // durationTextBox
             // 
             this.durationTextBox.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.durationTextBox.Location = new System.Drawing.Point(399, 176);
+            this.durationTextBox.Location = new System.Drawing.Point(445, 176);
             this.durationTextBox.Name = "durationTextBox";
             this.durationTextBox.Size = new System.Drawing.Size(100, 20);
             this.durationTextBox.TabIndex = 7;
@@ -137,12 +138,23 @@
             this.goButton.TabIndex = 8;
             this.goButton.Text = "Go";
             this.goButton.UseVisualStyleBackColor = true;
+            this.goButton.Click += new System.EventHandler(this.goButton_Click);
+            // 
+            // messageLabel
+            // 
+            this.messageLabel.AutoSize = true;
+            this.messageLabel.Location = new System.Drawing.Point(442, 211);
+            this.messageLabel.Name = "messageLabel";
+            this.messageLabel.Size = new System.Drawing.Size(39, 13);
+            this.messageLabel.TabIndex = 9;
+            this.messageLabel.Text = "Output";
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.messageLabel);
             this.Controls.Add(this.goButton);
             this.Controls.Add(this.durationTextBox);
             this.Controls.Add(this.label2);
@@ -170,6 +182,7 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox durationTextBox;
         private System.Windows.Forms.Button goButton;
+        private System.Windows.Forms.Label messageLabel;
     }
 }
 

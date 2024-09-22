@@ -10,6 +10,7 @@ using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml.XPath;
 
 namespace ToolManagerGUI
 {
@@ -20,7 +21,6 @@ namespace ToolManagerGUI
         public Form1()
         {
             InitializeComponent();
-
             startRadioButton.CheckedChanged += new EventHandler(radioButtons_CheckedChanged);
             pauseRadioButton.CheckedChanged += new EventHandler(radioButtons_CheckedChanged);
             stopRadioButton.CheckedChanged += new EventHandler(radioButtons_CheckedChanged);
@@ -33,6 +33,7 @@ namespace ToolManagerGUI
             running = new int[pnames.Count];
             toolStatusLabel.Text = "";
             int y = 154;
+            int amountRunning = 0;
             for (int i = 0; i < pnames.Count; i++)
             {
                 CheckBox checkBox1 = new CheckBox();
@@ -48,7 +49,8 @@ namespace ToolManagerGUI
                 Controls.Add(checkBox1);
                 checkBoxes.Add(checkBox1);
                 y += 20;
-
+                if (pnames[i] == "DisableTaskbar")
+                    pnames[i] = "DisableTaskbar-x64";
                 Process[] pname = Process.GetProcessesByName(pnames[i]);
                 if (pname.Length == 0)
                 {
@@ -59,7 +61,14 @@ namespace ToolManagerGUI
                 {
                     toolStatusLabel.Text += pnames[i] + ": Running\n";
                     running[i] = 1;
+                    amountRunning++;
                 }
+            }
+            if (amountRunning == 0)
+            {
+                stopRadioButton.Enabled = false;
+                pauseRadioButton.Enabled = false;
+                restartRadioButton.Enabled = false;
             }
         }
         private void radioButtons_CheckedChanged(object sender, EventArgs e)
@@ -71,6 +80,7 @@ namespace ToolManagerGUI
                 {
                     for (int i = 0; i < checkBoxes.Count; i++)
                     {
+                        checkBoxes[i].Checked = false;
                         if (rb.Name == "startRadioButton")
                         {
                             if (running[i] == 1)
@@ -96,6 +106,62 @@ namespace ToolManagerGUI
                     }
                 }
             }
+        }
+
+        private void goButton_Click(object sender, EventArgs e)
+        {
+            durationTextBox.ForeColor = Color.Black;
+            Process process = new Process();
+            process.StartInfo.FileName = "ToolManager.exe";
+            process.StartInfo.Arguments = "";
+            process.StartInfo.UseShellExecute = false;
+            process.StartInfo.CreateNoWindow = true;
+            
+            if (startRadioButton.Checked)
+            {
+                process.StartInfo.Arguments += "start ";
+            }
+            else if (stopRadioButton.Checked)
+            {
+                process.StartInfo.Arguments += "stop ";
+            }
+            else if (pauseRadioButton.Checked)
+            {
+                process.StartInfo.Arguments += "pause ";
+            }
+            else if (restartRadioButton.Checked)
+            {
+                process.StartInfo.Arguments += "restart ";
+            }
+            for (int i = 0; i < checkBoxes.Count; i++)
+            {
+                if (checkBoxes[i].Checked)
+                {
+                    process.StartInfo.Arguments += checkBoxes[i].Text + " ";
+                }
+            }
+            if (durationTextBox.Text != "")
+            {
+                if (int.TryParse(durationTextBox.Text, out int value))
+                {
+                    process.StartInfo.Arguments += "-d " + durationTextBox.Text;
+                    process.Start();
+                    messageLabel.Text = "Success";
+                    process.WaitForExit();
+                }
+                else
+                {
+                    durationTextBox.ForeColor = Color.Red;
+                    messageLabel.Text = "Duration needs to be a number.";
+                }
+            }
+            else
+            {
+                process.Start();
+                messageLabel.Text = "Success";
+                process.WaitForExit();
+            }
+
         }
     }
 }
