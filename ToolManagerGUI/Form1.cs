@@ -17,6 +17,7 @@ namespace ToolManagerGUI
     public partial class Form1 : Form
     {
         List<CheckBox> checkBoxes = new List<CheckBox>();
+        List<string> pnames = new List<string>();
         int[] running;
         public Form1()
         {
@@ -26,7 +27,6 @@ namespace ToolManagerGUI
             stopRadioButton.CheckedChanged += new EventHandler(radioButtons_CheckedChanged);
             restartRadioButton.CheckedChanged += new EventHandler(radioButtons_CheckedChanged);
 
-            List<string> pnames = new List<string>();
             var lines = File.ReadLines("ToolManagerConfig.txt");
             foreach (var line in lines)
                 pnames.Add(line);
@@ -51,19 +51,8 @@ namespace ToolManagerGUI
                 y += 20;
                 if (pnames[i] == "DisableTaskbar")
                     pnames[i] = "DisableTaskbar-x64";
-                Process[] pname = Process.GetProcessesByName(pnames[i]);
-                if (pname.Length == 0)
-                {
-
-                    toolStatusLabel.Text += pnames[i] + ": Not Running\n";
-                }
-                else
-                {
-                    toolStatusLabel.Text += pnames[i] + ": Running\n";
-                    running[i] = 1;
-                    amountRunning++;
-                }
             }
+            amountRunning = checkIfRunning();
             if (amountRunning == 0)
             {
                 stopRadioButton.Enabled = false;
@@ -108,6 +97,27 @@ namespace ToolManagerGUI
             }
         }
 
+        private int checkIfRunning()
+        {
+            int amountRunning = 0;
+            for (int i = 0; i < pnames.Count; i++)
+            {
+                Process[] pname = Process.GetProcessesByName(pnames[i]);
+                if (pname.Length == 0)
+                {
+                    toolStatusLabel.Text += pnames[i] + ": Not Running\n";
+                    running[i] = 0;
+                }
+                else
+                {
+                    toolStatusLabel.Text += pnames[i] + ": Running\n";
+                    running[i] = 1;
+                    amountRunning++;
+                }
+            }
+            return amountRunning;
+        }
+
         private void goButton_Click(object sender, EventArgs e)
         {
             durationTextBox.ForeColor = Color.Black;
@@ -116,7 +126,7 @@ namespace ToolManagerGUI
             process.StartInfo.Arguments = "";
             process.StartInfo.UseShellExecute = false;
             process.StartInfo.CreateNoWindow = true;
-            
+
             if (startRadioButton.Checked)
             {
                 process.StartInfo.Arguments += "start ";
@@ -148,6 +158,7 @@ namespace ToolManagerGUI
                     process.Start();
                     messageLabel.Text = "Success";
                     process.WaitForExit();
+                    durationTextBox.Text = "";
                 }
                 else
                 {
@@ -161,7 +172,62 @@ namespace ToolManagerGUI
                 messageLabel.Text = "Success";
                 process.WaitForExit();
             }
+            toolStatusLabel.Text = "";
+            int amountRunning = 0;
+            amountRunning = checkIfRunning();
+            if (amountRunning == 0)
+            {
+                startRadioButton.Enabled = true;
+                stopRadioButton.Enabled = false;
+                pauseRadioButton.Enabled = false;
+                restartRadioButton.Enabled = false;
+            }
+            else if (amountRunning == 3)
+            {
+                startRadioButton.Enabled = false;
+                stopRadioButton.Enabled = true;
+                pauseRadioButton.Enabled = true;
+                restartRadioButton.Enabled = true;
+            }
+            else
+            {
+                startRadioButton.Enabled = true;
+                stopRadioButton.Enabled = true;
+                pauseRadioButton.Enabled = true;
+                restartRadioButton.Enabled = true;
+            }
 
+            if (startRadioButton.Checked)
+            {
+                startRadioButton.Checked = false;
+                startRadioButton.Checked = true;
+            }
+            else if (pauseRadioButton.Checked)
+            {
+                pauseRadioButton.Checked = false;
+                pauseRadioButton.Checked = true;
+            }
+            else if (stopRadioButton.Checked)
+            {
+                stopRadioButton.Checked = false;
+                stopRadioButton.Checked = true;
+            }
+            else if (restartRadioButton.Checked)
+            {
+                restartRadioButton.Checked = false;
+                restartRadioButton.Checked = true;
+            }
+
+            /*
+            startRadioButton.Checked = false;
+            stopRadioButton.Checked = false;
+            pauseRadioButton.Checked = false;
+            restartRadioButton.Checked = false;
+            for (int i = 0; i < checkBoxes.Count; i++)
+            {
+                checkBoxes[i].Checked = false;
+            }
+            */
         }
     }
 }
