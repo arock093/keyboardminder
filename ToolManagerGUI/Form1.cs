@@ -9,6 +9,7 @@ using System.Linq;
 using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
+using System.Timers;
 using System.Windows.Forms;
 using System.Xml.XPath;
 
@@ -19,6 +20,7 @@ namespace ToolManagerGUI
         List<CheckBox> checkBoxes = new List<CheckBox>();
         List<string> pnames = new List<string>();
         int[] running;
+        static System.Timers.Timer aTimer = new System.Timers.Timer();
         public Form1()
         {
             InitializeComponent();
@@ -99,6 +101,7 @@ namespace ToolManagerGUI
 
         private int checkIfRunning()
         {
+            toolStatusLabel.Text = "";
             int amountRunning = 0;
             for (int i = 0; i < pnames.Count; i++)
             {
@@ -116,6 +119,66 @@ namespace ToolManagerGUI
                 }
             }
             return amountRunning;
+        }
+
+        private void OnTimedEvent(object source, ElapsedEventArgs e)
+        {
+            aTimer.Stop();
+            if (this.InvokeRequired)
+            {
+                this.Invoke(new Action(() => UpdateControl()));
+            }
+            else
+            {
+                UpdateControl();
+            }    
+        }
+
+        private void UpdateControl()
+        {
+            int amountRunning = 0;
+            amountRunning = checkIfRunning();
+            if (amountRunning == 0)
+            {
+                startRadioButton.Enabled = true;
+                stopRadioButton.Enabled = false;
+                pauseRadioButton.Enabled = false;
+                restartRadioButton.Enabled = false;
+            }
+            else if (amountRunning == 3)
+            {
+                startRadioButton.Enabled = false;
+                stopRadioButton.Enabled = true;
+                pauseRadioButton.Enabled = true;
+                restartRadioButton.Enabled = true;
+            }
+            else
+            {
+                startRadioButton.Enabled = true;
+                stopRadioButton.Enabled = true;
+                pauseRadioButton.Enabled = true;
+                restartRadioButton.Enabled = true;
+            }
+            if (startRadioButton.Checked)
+            {
+                startRadioButton.Checked = false;
+                startRadioButton.Checked = true;
+            }
+            else if (pauseRadioButton.Checked)
+            {
+                pauseRadioButton.Checked = false;
+                pauseRadioButton.Checked = true;
+            }
+            else if (stopRadioButton.Checked)
+            {
+                stopRadioButton.Checked = false;
+                stopRadioButton.Checked = true;
+            }
+            else if (restartRadioButton.Checked)
+            {
+                restartRadioButton.Checked = false;
+                restartRadioButton.Checked = true;
+            }
         }
 
         private void goButton_Click(object sender, EventArgs e)
@@ -159,6 +222,9 @@ namespace ToolManagerGUI
                     messageLabel.Text = "Success";
                     process.WaitForExit();
                     durationTextBox.Text = "";
+                    aTimer.Elapsed += new ElapsedEventHandler(OnTimedEvent);
+                    aTimer.Interval = value * 60 * 1000 + 3000;
+                    aTimer.Enabled = true;
                 }
                 else
                 {
