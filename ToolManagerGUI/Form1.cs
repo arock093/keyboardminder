@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using System.Timers;
 using System.Windows.Forms;
 using System.Xml.XPath;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace ToolManagerGUI
 {
@@ -28,6 +29,7 @@ namespace ToolManagerGUI
             pauseRadioButton.CheckedChanged += new EventHandler(radioButtons_CheckedChanged);
             stopRadioButton.CheckedChanged += new EventHandler(radioButtons_CheckedChanged);
             restartRadioButton.CheckedChanged += new EventHandler(radioButtons_CheckedChanged);
+            durationTextBox.TextChanged += new EventHandler(durationTextBox_TextChanged);
 
             var lines = File.ReadLines("ToolManagerConfig.txt");
             foreach (var line in lines)
@@ -178,6 +180,18 @@ namespace ToolManagerGUI
             {
                 restartRadioButton.Checked = false;
                 restartRadioButton.Checked = true;
+            }
+        }
+
+        private void durationTextBox_TextChanged(object sender, EventArgs e)
+        {
+            if (int.TryParse(durationTextBox.Text, out int value))
+            {
+                durationTextBox.ForeColor = Color.Black;
+            }
+            else
+            {
+                durationTextBox.ForeColor = Color.Red;
             }
         }
 

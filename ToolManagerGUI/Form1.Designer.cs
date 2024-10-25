@@ -142,6 +142,7 @@
             // 
             // messageLabel
             // 
+            this.messageLabel.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.messageLabel.AutoSize = true;
             this.messageLabel.Location = new System.Drawing.Point(442, 211);
             this.messageLabel.Name = "messageLabel";
