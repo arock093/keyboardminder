@@ -45,7 +45,7 @@
             this.label1.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(111, 22);
+            this.label1.Location = new System.Drawing.Point(341, 23);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(73, 25);
             this.label1.TabIndex = 0;
@@ -56,7 +56,7 @@
             this.toolStatusLabel.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.toolStatusLabel.AutoSize = true;
             this.toolStatusLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.toolStatusLabel.Location = new System.Drawing.Point(33, 58);
+            this.toolStatusLabel.Location = new System.Drawing.Point(263, 59);
             this.toolStatusLabel.Name = "toolStatusLabel";
             this.toolStatusLabel.Size = new System.Drawing.Size(42, 20);
             this.toolStatusLabel.TabIndex = 1;

@@ -99,6 +99,7 @@ namespace ToolManagerGUI
                     }
                 }
             }
+            messageLabel.Text = "Output";
         }
 
         private int checkIfRunning()
