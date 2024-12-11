@@ -3,13 +3,14 @@ A set of tools to help you use your keyboard more and build a better workflow.
 
 ## Purpose
 
-This project is the first in a series with the goal of creating a workflow you can use on your computer to get your work done as efficiently as possible. 
+This project is the first in a series with the goal of creating a workflow you can use on your computer to get your work done as efficiently as possible.
+
+While both are equally important, it is generally better to separate practical use from just for fun. Keyboardminder is meant to fulfill the practical side more.
 
 The purpose of this specific project is provide a set of tools to help learn to solely use the keyboard for more tasks because it should be more efficient than using a mouse or track pad in a lot of cases. It also lays the groundwork for future projects that help you use the keyboard more efficiently.
 
-While I highly recommend incorporating this workflow into your routine for optimal efficiency in completing tasks, I also encourage you not to limit yourself exclusively to this method. Exploring different workflows can be a rewarding experience, offering valuable insights and potentially contributing to further improvements in this particular workflow. Feel free to experiment and find what works best for you in various contexts, whether at work or during more exploratory computer activities. This project aims to provide a reliable and efficient set of tools for your everyday tasks, but the beauty of technology lies in its diversity, allowing you to adapt and explore as needed.
+This workflow has had a large impact and decreased the amount of time it takes to get my necessary work on the computer done each day by 20 - 30%.
 
-That being said, this workflow has had a large impact and decreased the amount of time it takes to get my necessary work on the computer done each day by 20 - 30%.
 
 ## Future Tools
 
